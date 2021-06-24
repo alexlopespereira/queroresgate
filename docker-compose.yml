@@ -1,0 +1,42 @@
+version: '2'
+services:
+  elasticsearchvac:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    container_name: elasticsearchvac
+    environment:
+      - node.name=elasticsearchvac
+      - discovery.seed_hosts=elasticsearchvac
+      - cluster.initial_master_nodes=elasticsearchvac
+      - cluster.name=docker-cluster-gestor
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - network.host=0.0.0.0
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata-01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - net
+
+  kibanavac:
+    image: docker.elastic.co/kibana/kibana:7.13.2
+    container_name: kibanavac
+    environment:
+    - ELASTICSEARCH_URL=http://elasticsearchvac:9200
+    - KIBANA_AUTOCOMPLETETERMINATEAFTER=10000000
+    ports:
+      - 5601:5601
+    links:
+      - elasticsearchvac:elasticsearchvac
+    networks:
+      - net
+
+networks:
+  net:
+
+volumes:
+  esdata-01:
