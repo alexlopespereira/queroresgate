@@ -6,8 +6,8 @@ from flask import Flask, render_template, jsonify
 from flask import request
 from datetime import datetime
 from forms import VacinaForm
-from defs import es, ES_VACINEI_INDEX, body_settings_vacinei
-import re
+from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, PROTOCOL, KIBANA_HOST, KIBANA_PORT, APP_PORT
+
 
 def check_or_create_index(esc, index, settings):
     response = esc.indices.exists(index)
@@ -60,7 +60,7 @@ def index():
 
 @app.route('/visualizar', methods=['GET'])
 def visualizar():
-    return render_template('visualizar.html')
+    return render_template('visualizar.html', protocol=PROTOCOL, host=KIBANA_HOST, port=KIBANA_PORT)
 
 
 
@@ -68,4 +68,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         pass
     else:
-        app.run(debug=True, host='0.0.0.0') #, ssl_context='adhoc')
+        app.run(debug=True, host='0.0.0.0', port=APP_PORT) #, ssl_context='adhoc')
