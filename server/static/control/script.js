@@ -1,13 +1,13 @@
-brasilia = [-15.7801, -47.9292]
+
 var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
-
+orig = [-15.7801,-47.9292]
 var map = new L.Map('map', {
     tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
     layers: [OpenStreetMap_Mapnik],
-    center: brasilia,
+    center: orig,
     zoom: 10,
     zoomControl: true
 });
@@ -16,19 +16,20 @@ var map = new L.Map('map', {
 // on a production site, omit the "lc = "!
 lc = L.control.locate({
     strings: {
-        title: "Show me where I am, yo!"
+        title: "Onde me vacinei "
     }
 }).addTo(map);
 
- var marker = L.marker(brasilia).addTo(map);
- var popup = marker.bindPopup('<b>Hello world!</b><br />I am a popup.');
-// popup.openPopup();
+// var marker = L.marker(orig).addTo(map);
+// var popup = marker.bindPopup('<b>Me vacinei!</b><br />aqui.');
 
 function onMapClick(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(mymap);
-}
+    if (marker !== null) {
+        map.removeLayer(marker);
+    }
+    marker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
+    marker.bindPopup("Me vacinei aqui ");
+    $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
+    }
 
 map.on('click', onMapClick);

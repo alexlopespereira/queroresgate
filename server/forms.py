@@ -1,10 +1,13 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, RadioField
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms import StringField, RadioField, FloatField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email
+from wtforms.widgets import HiddenInput
 
 
 class VacinaForm(FlaskForm):
-    vacina = RadioField('Label', choices=[('coronavac','Coronavac'),('astrazeneca','Astrazeneca'), ('pfizer','Pfizer')],
+    vacina = RadioField('Vacina que tomei:', choices=[('coronavac','Coronavac'),('astrazeneca','Astrazeneca'), ('pfizer','Pfizer')],
                          validators=[DataRequired()])
-    email = EmailField('Email address', [DataRequired(), Email()])
+    email = EmailField('Email:', [DataRequired(), Email()])
+    # recaptcha = RecaptchaField()
+    latlong = StringField(u'LagLong', widget=HiddenInput(), default='-15.7801,-47.9292')
