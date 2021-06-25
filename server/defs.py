@@ -7,7 +7,7 @@ DEBUG = os.environ.get('DEBUG') == "True"
 
 ES_HOST = os.environ.get('ES_HOST') or 'e.vacinei.org'
 ES_PORT = os.environ.get('ES_PORT') or '443'
-ES_USER = os.environ.get('ES_USER') or 'admin'
+ES_USER = os.environ.get('ES_USER') or 'elastic'
 ES_PASSWORD = os.environ.get('ES_PASSWORD') or 'pass'  ## Setar Variavel de Ambiente
 ES_USE_SSL = os.environ.get('ES_USE_SSL') == "True"
 ES_VERIFY_CERTS = os.environ.get('ES_VERIFY_CERTS') == "True"
