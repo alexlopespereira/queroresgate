@@ -11,16 +11,13 @@ ES_USER = os.environ.get('ES_USER') or 'avnadmin'
 ES_PASSWORD = os.environ.get('ES_PASSWORD') or 'pass'  ## Setar Variavel de Ambiente
 ES_USE_SSL = os.environ.get('ES_USE_SSL') == "True"
 ES_VERIFY_CERTS = os.environ.get('ES_VERIFY_CERTS') == "True"
-KIBANA_HOST = os.environ.get('KIBANA_HOST') or 'esvacinei-alex-5fd1.aivencloud.com'
-KIBANA_PORT = os.environ.get('KIBANA_PORT') or '443'
+DASHBOARD_URL = os.environ.get('DASHBOARD_URL') or 'https://esvacinei-alex-5fd1.aivencloud.com/app/dashboards#/view/4ade5180-d600-11eb-95bc-13b304406021?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-time-filter=true&hide-filter-bar=true'
 
 if ES_USE_SSL:
     APP_PORT = 443
-    PROTOCOL = 'https'
     ES_URL = "https://{0}".format(ES_HOST)
 else:
     APP_PORT = 5000
-    PROTOCOL = 'http'
     ES_URL = "http://{0}:{1}".format(ES_HOST, ES_PORT)
 ES_VACINEI_INDEX = os.environ.get('ES_ESOCIAL_INDEX') or 'vacinei__vacinei'
 job_vacinei = {"index": ES_VACINEI_INDEX, "settings": body_settings_vacinei, "namespace": "default"}

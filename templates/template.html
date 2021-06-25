@@ -1,4 +1,14 @@
-<html>
+<!doctype html>
+<title>Vacinei</title>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 <head>
     {% block head %}
     <meta charset="utf-8"/>

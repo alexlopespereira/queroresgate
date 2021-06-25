@@ -28,7 +28,7 @@ function onMapClick(e) {
         map.removeLayer(marker);
     }
     marker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
-    marker.bindPopup("Me vacinei aqui ");
+    marker.bindPopup("Informar aqui ").openPopup();
     $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
     }
 

@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block content %}
+{% if tosubmit == True %}
   <form method="POST" action="/">
         {{ form.hidden_tag() }}
         <div class="row">
@@ -21,15 +22,25 @@
         <div id="map"></div>
         <div class="row">
             <div class="col-xs-3 col-md-3">
-<!--                {{ form.recaptcha }}-->
+                {% if torecaptcha == True %}
+                    {{ form.recaptcha }}
+                {% endif %}
                 <input type="submit" value="Enviar" class="btn btn-lg btn-primary">
             </div>
         </div>
     </form>
+{% else %}
+<h2>{{ email }},</h2>
+<h4>Muito obrigado por sua contribuição!</h4>
+    <div id="map"></div>
+{% endif %}
 <script>
         var orig = [{{ origem[0] }}, {{ origem[1] }}];
         var orig_str = '{{ origem[0] }}, {{ origem[1] }}';
         $('#latlong').val(orig_str);
+        $("form").submit(function() {
+           $(":submit", this).attr("disabled", "disabled");
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
     <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
@@ -39,6 +50,6 @@
             integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script>
         marker = new L.marker([{{ origem[0] }},{{ origem[1] }}]).addTo(map);
-        marker.bindPopup("Me vacinei aqui ").openPopup();
+        marker.bindPopup("Informar aqui ").openPopup();
     </script>
 {% endblock %}

@@ -2,11 +2,11 @@ import json
 import sys
 from flask_recaptcha import ReCaptcha
 import requests as requests
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, flash
 from flask import request
 from datetime import datetime
 from forms import VacinaForm
-from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, PROTOCOL, KIBANA_HOST, KIBANA_PORT, APP_PORT
+from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG
 
 
 def check_or_create_index(esc, index, settings):
@@ -32,7 +32,7 @@ app.config['RECAPTCHA_TYPE'] = 'image'
 app.config['RECAPTCHA_SIZE'] = 'compact'
 app.config['RECAPTCHA_RTABINDEX'] = 10
 brasilia = [-15.7801, -47.9292]
-
+orig = None
 def get_geolocation(ip):
     url = 'http://freegeoip.net/json/{}'.format(ip)
     r = requests.get(url)
@@ -42,26 +42,28 @@ def get_geolocation(ip):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = VacinaForm(request.form)
-    orig = brasilia
-    if request.method == "POST" and form.validate_on_submit():
-        # print(form.vacina.data)
-        # ip = request.remote_addr
-        latlong = form.latlong.data
-        es.index(ES_VACINEI_INDEX, body={"location": latlong,
-                                         "vacina": form.vacina.data, "date": datetime.utcnow().isoformat()}, id=form.email.data, doc_type="_doc")
-        orig = latlong.split(',')
+    global orig
+    if orig is None:
+        orig = brasilia
     else:
-        print(form.errors)
-    # lat, long = get_geolocation(ip)
+        orig = form.latlong.data.split(',')
 
-
-    return render_template('index.html', form=form, origem=orig)
+    if request.method == "POST":
+        if form.validate_on_submit():
+            latlong = form.latlong.data
+            es.index(ES_VACINEI_INDEX, body={"location": latlong,
+                                             "vacina": form.vacina.data, "date": datetime.utcnow().isoformat()}, id=form.email.data, doc_type="_doc")
+            orig = latlong.split(',')
+        else:
+            print(form.errors)
+        return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG, tosubmit=False, popup_message="Me vacinei aqui", email=form.email.data)
+    else:
+        return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG, tosubmit=True, popup_message="Informar aqui")
 
 
 @app.route('/visualizar', methods=['GET'])
 def visualizar():
-    return render_template('visualizar.html', protocol=PROTOCOL, host=KIBANA_HOST, port=KIBANA_PORT)
-
+    return render_template('visualizar.html', dashboard_url=DASHBOARD_URL)
 
 
 if __name__ == '__main__':
