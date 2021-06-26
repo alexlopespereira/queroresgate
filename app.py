@@ -20,16 +20,17 @@ def check_or_create_index(esc, index, settings):
 
 check_or_create_index(es, ES_VACINEI_INDEX, body_settings_vacinei)
 
-SECRET_KEY = 'development'
+SECRET_KEY = 'developmentdfgsdg43539405332dfgsdf'
 app = Flask(__name__)
 recaptcha = ReCaptcha(app=app)
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['RECAPTCHA_ENABLED'] = True
-app.config['RECAPTCHA_PUBLIC_KEY'] = '6LflH3UUAAAAAN04iK_OASgI59B26iA-gPJBoDVO'
-app.config['RECAPTCHA_PRIVATE_KEY'] = '6LflH3UUAAAAAMP-x2-Dgf0R40rTTGcWoqSwG7LP'
+app.config['RECAPTCHA_PUBLIC_KEY'] = '6LfZSlobAAAAAHXBC3Sv8m5iZlbbEgwq_S8OHRTg'
+app.config['RECAPTCHA_PRIVATE_KEY'] = '6LfZSlobAAAAANdUkdvtIaeg7HC44AG8ayIWin-7'
 app.config['RECAPTCHA_THEME'] = 'white'
 app.config['RECAPTCHA_TYPE'] = 'image'
 app.config['RECAPTCHA_SIZE'] = 'compact'
+app.config['RECAPTCHA_USE_SSL'] = False
 app.config['RECAPTCHA_RTABINDEX'] = 10
 brasilia = [-15.7801, -47.9292]
 orig = None
@@ -41,14 +42,9 @@ def get_geolocation(ip):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = VacinaForm(request.form)
     global orig
-    if orig is None:
-        orig = brasilia
-    else:
-        orig = form.latlong.data.split(',')
-
     if request.method == "POST":
+        form = VacinaForm(request.form)
         if form.validate_on_submit():
             latlong = form.latlong.data
             data_vacinacao = dateutil.parser.parse(form.data.data)
@@ -60,6 +56,9 @@ def index():
             render_template('index.html', form=form, origem=orig, tosubmit=True, popup_message="Informar aqui")
         return render_template('index.html', form=form, origem=orig, tosubmit=False, popup_message="Me vacinei aqui", email=form.email.data)
     else:
+        if orig is None:
+            orig = brasilia
+        form = VacinaForm()
         return render_template('index.html', form=form, origem=orig, tosubmit=True, popup_message="Informar aqui")
 
 

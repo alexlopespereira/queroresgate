@@ -40,9 +40,7 @@
         <div id="map" style="margin-top:10px"></div>
         <div class="row" style="margin-top: 10px">
             <div class="col-xs-3 col-md-3">
-<!--                {% if torecaptcha %}-->
-                    {{ form.recaptcha }}
-<!--                {% endif %}-->
+                {{ form.recaptcha }}
                 <input type="submit" value="Enviar" class="btn btn-lg btn-primary">
             </div>
         </div>
@@ -68,6 +66,6 @@
             integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script>
         marker = new L.marker([{{ origem[0] }},{{ origem[1] }}]).addTo(map);
-        marker.bindPopup("Informar aqui ").openPopup();
+        marker.bindPopup("{{popup_message}}").openPopup();
     </script>
 {% endblock %}
