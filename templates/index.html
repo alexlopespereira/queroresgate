@@ -10,12 +10,11 @@
         <div class="row">
             <div class="col-xs-12 col-md-12">
                  {{ form.vacina.label }}
-                {{ form.vacina }}
-<!--                {% for subfield in form.vacina %}-->
-<!--                    <ul>-->
-<!--                        <li>{{ subfield(required="required") }} {{ subfield.label }}</li>-->
-<!--                    </ul>-->
-<!--                {% endfor %}-->
+                <ul id="vacina">
+                {% for subfield in form.vacina %}
+                        <li>{{ subfield(required="required") }} {{ subfield.label }}</li>
+                {% endfor %}
+                    </ul>
                 {{ form.latlong }}
             </div>
 
@@ -40,7 +39,9 @@
         <div id="map" style="margin-top:10px"></div>
         <div class="row" style="margin-top: 10px">
             <div class="col-xs-3 col-md-3">
-                {{ form.recaptcha }}
+                {% if torecaptcha == True %}
+                    {{ form.recaptcha }}
+                {% endif %}
                 <input type="submit" value="Enviar" class="btn btn-lg btn-primary">
             </div>
         </div>
@@ -65,7 +66,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
             integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script>
-        marker = new L.marker([{{ origem[0] }},{{ origem[1] }}]).addTo(map);
-        marker.bindPopup("{{popup_message}}").openPopup();
+<!--        marker = new L.marker([{{ origem[0] }},{{ origem[1] }}]).addTo(map);-->
+<!--        marker.bindPopup("{{popup_message}}").openPopup();-->
     </script>
 {% endblock %}

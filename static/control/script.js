@@ -3,14 +3,14 @@ var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{
 	maxZoom: 19,
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 });
-orig = [-15.7801,-47.9292]
+orig = [-16.7801,-47.9292]
 var map = new L.Map('map', {
     tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
     layers: [OpenStreetMap_Mapnik],
-    center: orig,
     zoom: 10,
     zoomControl: true
-});
+})
+map.locate({setView: true, maxZoom: 16});
 
 // add location control to global name space for testing only
 // on a production site, omit the "lc = "!
