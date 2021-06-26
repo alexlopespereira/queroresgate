@@ -5,13 +5,13 @@ from elk.settings_vacinei import body_settings_vacinei
 
 DEBUG = os.environ.get('DEBUG') == "True"
 
-ES_HOST = os.environ.get('ES_HOST') or 'esvacinei-alex-5fd1.aivencloud.com'
-ES_PORT = os.environ.get('ES_PORT') or '20953'
-ES_USER = os.environ.get('ES_USER') or 'avnadmin'
+ES_HOST = os.environ.get('ES_HOST') or 'e.vacinei.org'
+ES_PORT = os.environ.get('ES_PORT') or '9200'
+ES_USER = os.environ.get('ES_USER') or 'elastic'
 ES_PASSWORD = os.environ.get('ES_PASSWORD') or 'pass'  ## Setar Variavel de Ambiente
 ES_USE_SSL = os.environ.get('ES_USE_SSL') == "True"
 ES_VERIFY_CERTS = os.environ.get('ES_VERIFY_CERTS') == "True"
-DASHBOARD_URL = os.environ.get('DASHBOARD_URL') or 'https://esvacinei-alex-5fd1.aivencloud.com/app/dashboards#/view/4ade5180-d600-11eb-95bc-13b304406021?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-time-filter=true&hide-filter-bar=true'
+DASHBOARD_URL = os.environ.get('DASHBOARD_URL') or 'https://k.vacinei.org/app/dashboards#/view/4ade5180-d600-11eb-95bc-13b304406021?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-time-filter=true&hide-filter-bar=true'
 
 if ES_USE_SSL:
     APP_PORT = 443
