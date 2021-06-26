@@ -9,18 +9,35 @@
         {{ form.hidden_tag() }}
         <div class="row">
             <div class="col-xs-12 col-md-12">
-                {{ form.email.label }} {{ form.email }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-md-12">
-                {{ form.vacina.label }} {{ form.vacina }}
+                 {{ form.vacina.label }}
+                {% for subfield in form.vacina %}
+                    <ul>
+                        <li>{{ subfield(required="required") }} {{ subfield.label }}</li>
+                    </ul>
+                {% endfor %}
                 {{ form.latlong }}
             </div>
 
         </div>
-        <div id="map"></div>
-        <div class="row">
+
+        <div class="row" style="margin-top: 10px">
+            <div class="col-xs-12 col-md-12">
+                {{ form.email.label }} {{ form.email }}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-xs-12 col-md-12">
+                {{ form.idade.label }} {{ form.idade }}
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+            <div class="col-xs-12 col-md-12">
+                {{ form.data.label }} {{ form.data }}
+            </div>
+        </div>
+        <div id="map" style="margin-top:10px"></div>
+        <div class="row" style="margin-top: 10px">
             <div class="col-xs-3 col-md-3">
                 {% if torecaptcha == True %}
                     {{ form.recaptcha }}

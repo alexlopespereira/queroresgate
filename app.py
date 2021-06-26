@@ -7,7 +7,7 @@ from flask import request
 from datetime import datetime
 from forms import VacinaForm
 from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG
-
+import dateutil.parser
 
 def check_or_create_index(esc, index, settings):
     response = esc.indices.exists(index)
@@ -51,11 +51,13 @@ def index():
     if request.method == "POST":
         if form.validate_on_submit():
             latlong = form.latlong.data
-            es.index(ES_VACINEI_INDEX, body={"location": latlong,
+            data_vacinacao = dateutil.parser.parse(form.data.data)
+            es.index(ES_VACINEI_INDEX, body={"location": latlong, "idade": form.idade.data, "data_vacinacao": data_vacinacao,
                                              "vacina": form.vacina.data, "date": datetime.utcnow().isoformat()}, id=form.email.data, doc_type="_doc")
             orig = latlong.split(',')
         else:
-            print(form.errors)
+            flash('Todos os campos são obrigatórios', category='error')
+            render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG, tosubmit=True, popup_message="Informar aqui")
         return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG, tosubmit=False, popup_message="Me vacinei aqui", email=form.email.data)
     else:
         return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG, tosubmit=True, popup_message="Informar aqui")

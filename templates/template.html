@@ -1,14 +1,20 @@
 <!doctype html>
 <title>Vacinei</title>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+<div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'message' %}
+              <div class="alert alert-warning" role="alert">
+            {% else %}
+              <div class="alert alert-{{ category }}" role="alert">
+            {% endif %}
+              {{ message }}
+            </div>
+        {% endfor %}
+      {% endif %}
+  {% endwith %}
+</div>
 <head>
     {% block head %}
     <meta charset="utf-8"/>

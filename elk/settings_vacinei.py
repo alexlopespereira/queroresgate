@@ -16,10 +16,18 @@ body_settings_vacinei = {
         {
           "type": "keyword"
         },
-      "date":
+        "date":
         {
           "type":   "date",
           "format": "date_optional_time"
+        },
+        "data_vacinacao":
+        {
+          "type":   "date"
+        },
+      "idade":
+        {
+          "type": "integer"
         }
     }
   }
