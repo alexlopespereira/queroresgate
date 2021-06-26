@@ -1,12 +1,14 @@
 import json
 import sys
+
+import elasticsearch
 from flask_recaptcha import ReCaptcha
 import requests as requests
 from flask import Flask, render_template, flash
 from flask import request
 from datetime import datetime
 from forms import VacinaForm
-from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG
+from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG, SECRET_KEY
 import dateutil.parser
 
 def check_or_create_index(esc, index, settings):
@@ -17,10 +19,13 @@ def check_or_create_index(esc, index, settings):
         esc.indices.create(index, body=settings)
         return "CREATED"
 
+try:
+    check_or_create_index(es, ES_VACINEI_INDEX, body_settings_vacinei)
+except elasticsearch.exceptions.ConnectionError as e:
+    print(e)
+    pass
 
-check_or_create_index(es, ES_VACINEI_INDEX, body_settings_vacinei)
 
-SECRET_KEY = 'developmentdfgsdg43539405332dfgsdf'
 app = Flask(__name__)
 recaptcha = ReCaptcha(app=app)
 app.config['SECRET_KEY'] = SECRET_KEY

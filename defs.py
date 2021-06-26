@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch
 from elk.settings_vacinei import body_settings_vacinei
 
 DEBUG = os.environ.get('DEBUG') == "True"
-
+SECRET_KEY = os.environ.get('SECRET_KEY') or 'developmentdfgsdg43539405332dfgsdf'
 ES_HOST = os.environ.get('ES_HOST') or 'e.vacinei.org'
 ES_PORT = os.environ.get('ES_PORT') or '9200'
 ES_USER = os.environ.get('ES_USER') or 'elastic'
