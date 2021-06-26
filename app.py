@@ -30,8 +30,8 @@ app = Flask(__name__)
 recaptcha = ReCaptcha(app=app)
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['RECAPTCHA_ENABLED'] = True
-app.config['RECAPTCHA_PUBLIC_KEY'] = '6LfZSlobAAAAAHXBC3Sv8m5iZlbbEgwq_S8OHRTg'
-app.config['RECAPTCHA_PRIVATE_KEY'] = '6LfZSlobAAAAANdUkdvtIaeg7HC44AG8ayIWin-7'
+app.config['RECAPTCHA_PUBLIC_KEY'] = '6Lc9Y1obAAAAAM-7g3G29a_-CHg2O0Cl81YAR-0l'
+app.config['RECAPTCHA_PRIVATE_KEY'] = '6Lc9Y1obAAAAAN6YQEC1nLkyAp03FQMpemNiKc7M'
 app.config['RECAPTCHA_THEME'] = 'white'
 app.config['RECAPTCHA_TYPE'] = 'image'
 app.config['RECAPTCHA_SIZE'] = 'compact'
