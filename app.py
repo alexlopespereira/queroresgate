@@ -58,13 +58,13 @@ def index():
             orig = latlong.split(',')
         else:
             flash('Todos os campos são obrigatórios', category='error')
-            render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG, tosubmit=True, popup_message="Informar aqui")
-        return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG, tosubmit=False, popup_message="Me vacinei aqui", email=form.email.data)
+            render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG==False, tosubmit=True, popup_message="Informar aqui")
+        return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG==False, tosubmit=False, popup_message="Me vacinei aqui", email=form.email.data)
     else:
         if orig is None:
             orig = brasilia
         form = VacinaForm()
-        return render_template('index.html', form=form, origem=orig, tosubmit=True, popup_message="Informar aqui")
+        return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG==False, tosubmit=True, popup_message="Informar aqui")
 
 
 @app.route('/visualizar', methods=['GET'])
