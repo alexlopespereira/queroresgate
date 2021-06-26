@@ -1,6 +1,5 @@
 import json
 import sys
-
 import elasticsearch
 from flask_recaptcha import ReCaptcha
 import requests as requests
@@ -53,6 +52,7 @@ def index():
         if form.validate_on_submit():
             latlong = form.latlong.data
             data_vacinacao = dateutil.parser.parse(form.data.data)
+            # email_hash = hashlib.sha256(form.email.data.encode()).hexdigest()
             es.index(ES_VACINEI_INDEX, body={"location": latlong, "idade": form.idade.data, "data_vacinacao": data_vacinacao,
                                              "vacina": form.vacina.data, "date": datetime.utcnow().isoformat()}, id=form.email.data, doc_type="_doc")
             orig = latlong.split(',')
