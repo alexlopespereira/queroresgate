@@ -10,11 +10,12 @@
         <div class="row">
             <div class="col-xs-12 col-md-12">
                  {{ form.vacina.label }}
-                {% for subfield in form.vacina %}
-                    <ul>
-                        <li>{{ subfield(required="required") }} {{ subfield.label }}</li>
-                    </ul>
-                {% endfor %}
+                {{ form.vacina }}
+<!--                {% for subfield in form.vacina %}-->
+<!--                    <ul>-->
+<!--                        <li>{{ subfield(required="required") }} {{ subfield.label }}</li>-->
+<!--                    </ul>-->
+<!--                {% endfor %}-->
                 {{ form.latlong }}
             </div>
 
