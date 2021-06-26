@@ -56,8 +56,7 @@ def index():
         if form.validate_on_submit():
             latlong = form.latlong.data
             data_vacinacao = dateutil.parser.parse(form.data.data)
-            # email_hash = hashlib.sha256(form.email.data.encode()).hexdigest()
-            es.index(ES_VACINEI_INDEX, body={"location": latlong, "idade": form.idade.data, "data_vacinacao": data_vacinacao,
+            es.index(ES_VACINEI_INDEX, body={"location": latlong, "idade": form.idade.data, "data_vacinacao": data_vacinacao, "desperdicio": form.desperdicio.data==1,
                                              "vacina": form.vacina.data, "date": datetime.utcnow().isoformat()}, id=form.email.data, doc_type="_doc")
             orig = latlong.split(',')
             return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Me vacinei aqui",

@@ -4,6 +4,8 @@
 {% endblock %}
 
 {% block content %}
+<div class="container">
+
 {{ super() }}
 {% if tosubmit == True %}
   <form method="POST" action="/">
@@ -81,4 +83,5 @@
            $(":submit", this).attr("disabled", "disabled");
         });
     </script>
+</div>
 {% endblock %}
