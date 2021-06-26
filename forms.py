@@ -5,7 +5,6 @@ from wtforms import StringField, RadioField, FloatField, IntegerField, DateTimeF
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email
 from wtforms.widgets import HiddenInput
-from defs import DEBUG
 
 
 class VacinaForm(FlaskForm):
@@ -14,6 +13,5 @@ class VacinaForm(FlaskForm):
     email = EmailField('Email: ',validators=[DataRequired(), Email()], description="joao@gmail.com")
     idade = IntegerField("Idade: ", description="50", validators=[DataRequired()])
     data = StringField("Data da vacinação: ", default=datetime.today().strftime("%d-%m-%Y"), validators=[DataRequired()])
-    # if not DEBUG:
     recaptcha = RecaptchaField()
     latlong = StringField(u'LagLong', widget=HiddenInput(), default='-15.7801,-47.9292')
