@@ -1,4 +1,4 @@
-
+first_location = true
 var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	maxZoom: 19,
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -10,18 +10,17 @@ var map = new L.Map('map', {
     zoom: 10,
     zoomControl: true
 })
-map.locate({setView: true, maxZoom: 16});
 
-// add location control to global name space for testing only
-// on a production site, omit the "lc = "!
-lc = L.control.locate({
-    strings: {
-        title: "Onde me vacinei "
+function onLocationFound(e) {
+    if (first_location) {
+        marker = new L.marker(e.latlng).addTo(map);
+        marker.bindPopup("Informar aqui ").openPopup();
+        $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
+        first_location = false
     }
-}).addTo(map);
+}
 
-// var marker = L.marker(orig).addTo(map);
-// var popup = marker.bindPopup('<b>Me vacinei!</b><br />aqui.');
+map.on('locationfound', onLocationFound);
 
 function onMapClick(e) {
     if (marker !== null) {

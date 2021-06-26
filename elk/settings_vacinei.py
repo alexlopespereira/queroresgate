@@ -28,6 +28,10 @@ body_settings_vacinei = {
       "idade":
         {
           "type": "integer"
+        },
+      "desperdicio":
+        {
+          "type": "boolean"
         }
     }
   }

@@ -4,6 +4,7 @@
 {% endblock %}
 
 {% block content %}
+{{ super() }}
 {% if tosubmit == True %}
   <form method="POST" action="/">
         {{ form.hidden_tag() }}
@@ -34,8 +35,14 @@
         <div class="row" style="margin-top:10px">
             <div class="col-xs-12 col-md-12">
                 {{ form.data.label }} {{ form.data }}
+
             </div>
         </div>
+      <div class="row" style="margin-top:10px">
+            <div class="col-xs-12 col-md-12">
+                {{ form.desperdicio.label }} {{ form.desperdicio(disabled=inappropriate_time) }}
+            </div>
+      </div>
         <div id="map" style="margin-top:10px"></div>
         <div class="row" style="margin-top: 10px">
             <div class="col-xs-3 col-md-3">
@@ -51,14 +58,6 @@
 <h4>Muito obrigado por sua contribuição!</h4>
     <div id="map"></div>
 {% endif %}
-<script>
-        var orig = [{{ origem[0] }}, {{ origem[1] }}];
-        var orig_str = '{{ origem[0] }}, {{ origem[1] }}';
-        $('#latlong').val(orig_str);
-        $("form").submit(function() {
-           $(":submit", this).attr("disabled", "disabled");
-        });
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
     <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
     <script src="{{url_for('static', filename='control/script.js')}}"></script>
@@ -66,7 +65,20 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
             integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script>
-<!--        marker = new L.marker([{{ origem[0] }},{{ origem[1] }}]).addTo(map);-->
-<!--        marker.bindPopup("{{popup_message}}").openPopup();-->
+        lc = L.control.locate({strings: {title:"Localização"}}).addTo(map);
+        {% if origem is not none %}
+            var orig = [{{ origem[0] }}, {{ origem[1] }}];
+            var orig_str = '{{ origem[0] }}, {{ origem[1] }}';
+            $('#latlong').val(orig_str);
+            marker = new L.marker([{{ origem[0] }},{{ origem[1] }}]).addTo(map);
+            marker.bindPopup('{{ popup_message }}').openPopup();
+        {% else %}
+            lc.start();
+        {% endif %}
+
+
+        $("form").submit(function() {
+           $(":submit", this).attr("disabled", "disabled");
+        });
     </script>
 {% endblock %}

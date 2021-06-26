@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, RadioField, FloatField, IntegerField, DateTimeField
+from wtforms import StringField, RadioField, FloatField, IntegerField, DateTimeField, SelectField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email
 from wtforms.widgets import HiddenInput
@@ -15,6 +15,7 @@ class VacinaForm(FlaskForm):
     email = EmailField('Email: ',validators=[DataRequired(), Email()], description="joao@gmail.com")
     idade = IntegerField("Idade: ", description="50", validators=[DataRequired()])
     data = StringField("Data da vacinação: ", default=datetime.today().strftime("%d-%m-%Y"), validators=[DataRequired()])
+    desperdicio = SelectField(u'Haverá desperdício hoje: ', choices=[(1, 'Sim'), (0, 'Não')], default=0, coerce=int)
     if not DEBUG:
         recaptcha = RecaptchaField()
     latlong = StringField(u'LagLong', widget=HiddenInput(), default='-15.7801,-47.9292')

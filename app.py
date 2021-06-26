@@ -9,6 +9,7 @@ from datetime import datetime
 from forms import VacinaForm
 from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG, SECRET_KEY
 import dateutil.parser
+from flask_bootstrap import Bootstrap
 
 def check_or_create_index(esc, index, settings):
     response = esc.indices.exists(index)
@@ -27,6 +28,7 @@ except elasticsearch.exceptions.ConnectionError as e:
 
 app = Flask(__name__)
 recaptcha = ReCaptcha(app=app)
+Bootstrap(app)
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['RECAPTCHA_ENABLED'] = True
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6Lc9Y1obAAAAAM-7g3G29a_-CHg2O0Cl81YAR-0l'
@@ -37,7 +39,8 @@ app.config['RECAPTCHA_SIZE'] = 'compact'
 app.config['RECAPTCHA_USE_SSL'] = False
 app.config['RECAPTCHA_RTABINDEX'] = 10
 brasilia = [-15.7801, -47.9292]
-orig = None
+
+
 def get_geolocation(ip):
     url = 'http://freegeoip.net/json/{}'.format(ip)
     r = requests.get(url)
@@ -46,7 +49,8 @@ def get_geolocation(ip):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    global orig
+    current_hour = datetime.utcnow().hour
+    inappropriate_time = current_hour > 21 or current_hour < 15
     if request.method == "POST":
         form = VacinaForm(request.form)
         if form.validate_on_submit():
@@ -56,15 +60,17 @@ def index():
             es.index(ES_VACINEI_INDEX, body={"location": latlong, "idade": form.idade.data, "data_vacinacao": data_vacinacao,
                                              "vacina": form.vacina.data, "date": datetime.utcnow().isoformat()}, id=form.email.data, doc_type="_doc")
             orig = latlong.split(',')
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Me vacinei aqui",
+                                   email=form.email.data, inappropriate_time=inappropriate_time, origem=orig)
         else:
             flash('Todos os campos são obrigatórios', category='error')
-            render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG==False, tosubmit=True, popup_message="Informar aqui")
-        return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG==False, tosubmit=False, popup_message="Me vacinei aqui", email=form.email.data)
+            return render_template('index.html', form=form, torecaptcha=DEBUG==False, tosubmit=True, popup_message="Informar aqui",
+                            inappropriate_time=inappropriate_time, origem=None)
+
     else:
-        if orig is None:
-            orig = brasilia
         form = VacinaForm()
-        return render_template('index.html', form=form, origem=orig, torecaptcha=DEBUG==False, tosubmit=True, popup_message="Informar aqui")
+        return render_template('index.html', form=form, torecaptcha=DEBUG==False, tosubmit=True, popup_message="Informar aqui",
+                               inappropriate_time=inappropriate_time, origem=None)
 
 
 @app.route('/visualizar', methods=['GET'])
@@ -76,5 +82,8 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         pass
     else:
-        app.run(debug=True, host='0.0.0.0', port=APP_PORT) #, ssl_context='adhoc')
+        if DEBUG:
+            app.run(debug=True, host='0.0.0.0', port=APP_PORT, ssl_context='adhoc')
+        else:
+            app.run(debug=True, host='0.0.0.0', port=APP_PORT) #, ssl_context='adhoc')
 

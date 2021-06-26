@@ -1,38 +1,40 @@
-<!doctype html>
-<title>Vacinei</title>
-<div>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-            {% if category == 'message' %}
-              <div class="alert alert-warning" role="alert">
-            {% else %}
-              <div class="alert alert-{{ category }}" role="alert">
-            {% endif %}
-              {{ message }}
-            </div>
-        {% endfor %}
-      {% endif %}
-  {% endwith %}
-</div>
-<head>
-    {% block head %}
-    <meta charset="utf-8"/>
-    <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
 
-    <script src="{{url_for('static', filename='jquery-2.2.2.min.js')}}"></script>
+{% block title %}Vacinei{% endblock %}
+
+{% block head %}
+{{super()}}
+{{fixes.ie8()}}
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css"/>
     <link rel="stylesheet" href="{{url_for('static', filename='demo.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='control/L.Control.Locate.min.css')}}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    {% endblock %}
-</head>
-<body>
+    <!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
+{% endblock %}
 
-<div class="container">
-    <nav class="navbar navbar-default">
+{% block scripts %}
+    <script src="{{url_for('static', filename='jquery-2.2.2.min.js')}}"></script>
+<!--        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
+<script>
+$(document).ready(function() {
+  $('li.active').removeClass('active');
+  $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
+});
+</script>
+{{super()}}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="collapsed navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-6"
@@ -46,19 +48,11 @@
                 </ul>
             </div>
         </div>
-    </nav>
+</nav>
+{% endblock %}
 
-    {% block content %}
 
-    {% endblock %}
+{% block content %}
+{{util.flashed_messages(dismissible=True)}}
+{% endblock %}
 
-<script>
-$(document).ready(function() {
-  $('li.active').removeClass('active');
-  $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
-});
-
-</script>
-</div>
-
-</body>
