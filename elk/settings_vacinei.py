@@ -2,7 +2,7 @@
 body_settings_vacinei = {
   "settings": {
     "number_of_shards": 1,
-    "number_of_replicas": 2,
+    "number_of_replicas": 2
   },
   "mappings": {
     "properties": {

@@ -11,7 +11,7 @@ ES_USER = os.environ.get('ES_USER') or 'elastic'
 ES_PASSWORD = os.environ.get('ES_PASSWORD') or 'pass'  ## Setar Variavel de Ambiente
 ES_USE_SSL = os.environ.get('ES_USE_SSL') == "True"
 ES_VERIFY_CERTS = os.environ.get('ES_VERIFY_CERTS') == "True"
-DASHBOARD_URL = os.environ.get('DASHBOARD_URL') or 'https://k.vacinei.org/app/dashboards#/view/4ade5180-d600-11eb-95bc-13b304406021?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-time-filter=true&hide-filter-bar=true'
+DASHBOARD_URL = os.environ.get('DASHBOARD_URL') or 'https://k.vacinei.org:5601/app/dashboards#/view/e6ac2260-d63a-11eb-b7e8-bdf162e86103?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-time-filter=true&hide-filter-bar=true'
 
 if ES_USE_SSL:
     APP_PORT = 443
