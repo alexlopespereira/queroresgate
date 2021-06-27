@@ -16,6 +16,52 @@
     <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
             integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script src="{{url_for('static', filename='control/alert.js')}}"></script>
+    <script>
+    first_location = 0
+    var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    orig = [-15.7801,-47.9292]
+    var alertmap = new L.Map('alertmap', {
+        tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
+        layers: [OpenStreetMap_Mapnik],
+        center: orig,
+        zoom: 10,
+        zoomControl: true
+    })
+
+
+
+    function onLocationFound(e) {
+        if (first_location < 1) {
+            var bounds = [[e.latlng.lat-0.02,e.latlng.lng-0.02], [e.latlng.lat+0.02,e.latlng.lng+0.02]];
+            var rect = L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
+        }
+    }
+
+    alertmap.on('locationfound', onLocationFound);
+
+    function onMapClick(e) {
+        if (marker !== null) {
+            alertmap.removeLayer(marker);
+        }
+        marker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(alertmap);
+        marker.bindPopup("{{ popup_message }}").openPopup();
+        $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
+        }
+
+    alertmap.on('click', onMapClick);
+
+    lc = L.control.locate({strings: {title:"Localização"}}).addTo(alertmap);
+    {% if origem is defined %}
+        var orig = [{{ origem[0] }}, {{ origem[1] }}];
+        alertmap.panTo(new L.LatLng({{ origem[0] }}, {{ origem[1] }}));
+        marker = new L.marker(orig).addTo(alertmap);
+        marker.bindPopup('{{ popup_message }}').openPopup();
+    {% else %}
+        lc.start();
+    {% endif %}
+    </script>
 </div>
 {% endblock %}

@@ -5,6 +5,14 @@ position: absolute;
 width: 100%;
 }
 
+#alertmap {
+height: 300px;
+width: 300px
+position: absolute;
+width: 100%;
+}
+
+
 .form-control.error {
     border-color: #E74C3C;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 0, 0, 0.6);
