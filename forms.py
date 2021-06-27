@@ -10,7 +10,7 @@ from defs import DEBUG
 
 
 class VacinaForm(FlaskForm):
-    vacina = RadioField('Vacina que tomei: ', choices=[('coronavac', 'Coronavac'), ('astrazeneca', 'Astrazeneca'), ('pfizer', 'Pfizer')],
+    vacina = RadioField('Vacina que tomei: ', choices=[('coronavac', 'Coronavac'), ('astrazeneca', 'Astrazeneca'), ('pfizer', 'Pfizer'), ('jansen', 'Jansen')],
                         validators=[DataRequired()])
     email = EmailField('Email: ',validators=[DataRequired(), Email()], description="joao@gmail.com")
     idade = IntegerField("Idade: ", description="50", validators=[DataRequired()])
