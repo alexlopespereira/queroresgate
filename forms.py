@@ -17,4 +17,4 @@ class VacinaForm(FlaskForm):
     desperdicio = SelectField(u'Haverá desperdício hoje: ', choices=[(1, 'Sim'), (0, 'Não')], default=0, coerce=int)
     if not DEBUG:
         recaptcha = RecaptchaField()
-    latlong = StringField(u'LagLong', widget=HiddenInput(), default='-15.7801,-47.9292')
+    latlong = StringField(u'Marque no mapa o seu local de vacinação:', widget=HiddenInput())

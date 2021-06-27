@@ -45,6 +45,7 @@
                 {{ form.desperdicio.label }} {{ form.desperdicio(disabled=inappropriate_time) }}
             </div>
       </div>
+      {{ form.latlong.label }}
         <div id="map" style="margin-top:10px"></div>
         <div class="row" style="margin-top: 10px">
             <div class="col-xs-3 col-md-3">
@@ -85,9 +86,9 @@
     })
 
     function onLocationFound(e) {
-        if (first_location) {
+        if (first_location == true) {
             marker = new L.marker(e.latlng).addTo(map);
-            marker.bindPopup("Informar aqui ").openPopup();
+            marker.bindPopup("Informar aqui").openPopup();
             $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
             first_location = false
         }
@@ -100,7 +101,7 @@
             map.removeLayer(marker);
         }
         marker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
-        marker.bindPopup("Informar aqui ").openPopup();
+        marker.bindPopup("Informar aqui").openPopup();
         $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
         }
 

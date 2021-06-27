@@ -69,18 +69,24 @@ def index():
                                    email=form.email.data, inappropriate_time=inappropriate_time, origem=orig)
         else:
             flash('Todos os campos são obrigatórios', category='error')
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Informar aqui",
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Me vacinei aqui",
                                    inappropriate_time=inappropriate_time)
 
     else:
         form = VacinaForm()
-        return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Informar aqui",
+        return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Me vacinei aqui",
                                inappropriate_time=inappropriate_time)
 
 
 @app.route('/visualizar', methods=['GET'])
 def visualizar():
     return render_template('visualizar.html', dashboard_url=DASHBOARD_URL)
+
+
+@app.route('/alerta', methods=['GET'])
+def alerta():
+    return render_template('alerta.html')
+
 
 @app.route('/sobre', methods=['GET'])
 def sobre():
@@ -92,6 +98,6 @@ if __name__ == '__main__':
         pass
     else:
         if DEBUG:
-            app.run(debug=True, host='0.0.0.0', port=APP_PORT) #, ssl_context='adhoc')
+            app.run(debug=True, host='0.0.0.0', port=APP_PORT, ssl_context='adhoc')
         else:
             app.run(debug=True, host='0.0.0.0', port=APP_PORT)  # , ssl_context='adhoc')

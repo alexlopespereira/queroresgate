@@ -1,13 +1,14 @@
-var alertmap = L.map('alertmap', {drawControl: true}).setView([51.505, -0.09], 13);
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
- attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(alertmap);
+var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+orig = [-15.7801,-47.9292]
+var alertmap = new L.Map('alertmap', {
+    tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
+    layers: [OpenStreetMap_Mapnik],
+    zoom: 10,
+    zoomControl: true
+})
 
-var drawnItems = new L.FeatureGroup();
-map.addLayer(drawnItems);
-var drawControl = new L.Control.Draw({
- edit: {
-     featureGroup: drawnItems
- }
-});
-map.addControl(drawControl);
+var rectangle = L.rectangle([  [-15.6801,-47.9292], [-15.8801,-47.7292]]);
+alertmap.addLayer(rectangle);
