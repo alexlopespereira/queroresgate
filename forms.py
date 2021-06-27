@@ -5,7 +5,6 @@ from wtforms import StringField, RadioField, FloatField, IntegerField, DateTimeF
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email
 from wtforms.widgets import HiddenInput
-# from recaptcha3 import Recaptcha3Field
 from defs import DEBUG
 
 

@@ -1,0 +1,22 @@
+{% extends "template.html" %}
+{% block content %}
+<div class="container">
+
+{{ super() }}
+{% filter markdown %}
+### Transparência
+A contabilização das vacinas é disponibilizada instantaneamente. É possível filtar os dados por tipo de vacina e por data.
+
+### Xepa da Vacinação (Evitando as Perdas)
+São as doses que sobram dos frascos e que não podem ser aproveitadas no dia seguinte por causa do prazo de validade.
+
+Como não podem ser desperdiçadas, são aplicadas em pessoas que moram próximas às unidades de saúde, perto do horário do encerramento diário da vacinação.
+
+Cada imunizante tem um tempo determinado de validade após a abertura dos vidros.
+Fonte: [EBC](https://agenciabrasil.ebc.com.br/saude/noticia/2021-06/saiba-como-funciona-chamada-xepa-da-vacina)
+
+
+
+{% endfilter %}
+</div>
+{% endblock %}

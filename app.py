@@ -12,7 +12,7 @@ from forms import VacinaForm
 from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG, SECRET_KEY
 import dateutil.parser
 from flask_bootstrap import Bootstrap
-
+from flaskext.markdown import Markdown
 
 def check_or_create_index(esc, index, settings):
     response = esc.indices.exists(index)
@@ -32,6 +32,8 @@ except elasticsearch.exceptions.ConnectionError as e:
 app = Flask(__name__)
 recaptcha = ReCaptcha(app=app)
 Bootstrap(app)
+Markdown(app)
+
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['RECAPTCHA_ENABLED'] = True
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6Lc9Y1obAAAAAM-7g3G29a_-CHg2O0Cl81YAR-0l'
@@ -80,12 +82,16 @@ def index():
 def visualizar():
     return render_template('visualizar.html', dashboard_url=DASHBOARD_URL)
 
+@app.route('/sobre', methods=['GET'])
+def sobre():
+    return render_template('sobre.html')
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         pass
     else:
         if DEBUG:
-            app.run(debug=True, host='0.0.0.0', port=APP_PORT, ssl_context='adhoc')
+            app.run(debug=True, host='0.0.0.0', port=APP_PORT) #, ssl_context='adhoc')
         else:
             app.run(debug=True, host='0.0.0.0', port=APP_PORT)  # , ssl_context='adhoc')
