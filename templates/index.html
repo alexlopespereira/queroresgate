@@ -60,28 +60,60 @@
 <h4>Muito obrigado por sua contribuição!</h4>
     <div id="map"></div>
 {% endif %}
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{super()}}
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
     <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
     <script src="{{url_for('static', filename='control/script.js')}}"></script>
     <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script>
-        lc = L.control.locate({strings: {title:"Localização"}}).addTo(map);
-        {% if origem is not none %}
-            var orig = [{{ origem[0] }}, {{ origem[1] }}];
-            var orig_str = '{{ origem[0] }}, {{ origem[1] }}';
-            $('#latlong').val(orig_str);
-            marker = new L.marker([{{ origem[0] }},{{ origem[1] }}]).addTo(map);
-            marker.bindPopup('{{ popup_message }}').openPopup();
-        {% else %}
-            lc.start();
-        {% endif %}
+    first_location = true
+    var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    orig = [-15.7801,-47.9292]
+    var map = new L.Map('map', {
+        tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
+        layers: [OpenStreetMap_Mapnik],
+        zoom: 10,
+        zoomControl: true
+    })
 
+    function onLocationFound(e) {
+        if (first_location) {
+            marker = new L.marker(e.latlng).addTo(map);
+            marker.bindPopup("Informar aqui ").openPopup();
+            $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
+            first_location = false
+        }
+    }
 
-        $("form").submit(function() {
-           $(":submit", this).attr("disabled", "disabled");
-        });
+    map.on('locationfound', onLocationFound);
+
+    function onMapClick(e) {
+        if (marker !== null) {
+            map.removeLayer(marker);
+        }
+        marker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
+        marker.bindPopup("Informar aqui ").openPopup();
+        $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
+        }
+
+    map.on('click', onMapClick);
+
+    lc = L.control.locate({strings: {title:"Localização"}}).addTo(map);
+    {% if origem is defined %}
+        var orig = [{{ origem[0] }}, {{ origem[1] }}];
+        map.panTo(new L.LatLng({{ origem[0] }}, {{ origem[1] }}));
+        marker = new L.marker(orig).addTo(map);
+        marker.bindPopup('{{ popup_message }}').openPopup();
+    {% else %}
+        lc.start();
+    {% endif %}
     </script>
-</div>
 {% endblock %}

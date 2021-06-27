@@ -23,14 +23,13 @@
 
 {% block scripts %}
     <script src="{{url_for('static', filename='jquery-2.2.2.min.js')}}"></script>
-<!--        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
-<script>
-$(document).ready(function() {
-  $('li.active').removeClass('active');
-  $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
-});
-</script>
-{{super()}}
+    <script>
+    $(document).ready(function() {
+      $('li.active').removeClass('active');
+      $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
+    });
+    </script>
+    {{super()}}
 {% endblock %}
 
 
