@@ -37,6 +37,7 @@
         if (first_location < 1) {
             var bounds = [[e.latlng.lat-0.02,e.latlng.lng-0.02], [e.latlng.lat+0.02,e.latlng.lng+0.02]];
             var rect = L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
+            first_location = first_location + 1
         }
     }
 
