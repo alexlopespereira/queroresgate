@@ -14,7 +14,7 @@ ES_VERIFY_CERTS = os.environ.get('ES_VERIFY_CERTS') == "True"
 DASHBOARD_URL = os.environ.get('DASHBOARD_URL') or "https://k.vacinei.org:5601/app/dashboards?auth_provider_hint=anonymous1#/view/e6ac2260-d63a-11eb-b7e8-bdf162e86103?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-3d%2Cto%3Anow))&show-time-filter=true&hide-filter-bar=true"
 
 if ES_USE_SSL:
-    APP_PORT = 443
+    APP_PORT = 8080
     ES_URL = "https://{0}".format(ES_HOST)
 else:
     APP_PORT = 5000

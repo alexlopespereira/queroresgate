@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+{{ super() }}
+
+        <div id="map" style="margin-top:10px"></div>
+
+    <div id="map"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
+    <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
+    <script src="{{url_for('static', filename='control/alert.js')}}"></script>
+    <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script>
+
+
+    </script>
+</div>
+{% endblock %}
