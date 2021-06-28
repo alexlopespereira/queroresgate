@@ -17,8 +17,9 @@ def send_email(to, nreports, type_vacina, google_maps_url):
     content = [html]
 
     with yagmail.SMTP(user, app_password) as yag:
-        yag.send(to, subject, content)
-        print('Sent email successfully')
+        ret = yag.send(to, subject, content)
+
+    return bool(ret)
 
 
 if __name__ == '__main__':
