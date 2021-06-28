@@ -28,6 +28,13 @@
                 {% if torecaptcha == True %}
                     {{ form.recaptcha }}
                 {% endif %}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-xs-3 col-md-3">
+                {% if torecaptcha == True %}
+                    {{ form.recaptcha }}
+                {% endif %}
                 {{ form.registrar(class="btn btn-lg btn-primary") }}
             </div>
             <div class="col-xs-3 col-md-3">
