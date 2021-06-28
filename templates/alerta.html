@@ -7,15 +7,57 @@
 <div class="container">
 
 {{ super() }}
-<h3>Aqui você vai informar se quer ser notificado por email</h3>
-    <h4>Em construção.</h4>
-    <div id="alertmap"></div>
+    {% if tosubmit == True %}
+  <form method="POST" action="/alerta">
+        {{ form.hidden_tag() }}
+        <div class="row" style="margin-top: 10px">
+            <div class="col-xs-12 col-md-12">
+                {{ form.vacina.label }} {{ form.vacina }}
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-xs-12 col-md-12">
+                {{ form.email.label }} {{ form.email }}
+                {{ form.latlong }}
+            </div>
+        </div>
+      {{ form.latlong.label }}
+        <div id="alertmap"></div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-xs-3 col-md-3">
+                {% if torecaptcha == True %}
+                    {{ form.recaptcha }}
+                {% endif %}
+                {{ form.registrar(class="btn btn-lg btn-primary") }}
+            </div>
+            <div class="col-xs-3 col-md-3">
+                {{ form.descadastrar(class="btn btn-lg btn-primary") }}
+            </div>
+        </div>
+    </form>
+{% else %}
+<h2>{{ email }},</h2>
+<h3>Sua área de interesse foi registrada. </h3>
+<h4>Você receberá emails de alerta em caso de vacinas remanescentes!</h4>
+<div id="alertmap"  style="margin-top: 10px"></div>
+<form method="POST" action="/alerta">
+    {{ form.hidden_tag() }}
+    <div class="row" style="margin-top: 10px">
+        <div class="col-xs-12 col-md-12">
+             <input type="submit" value="Remover Alerta" class="btn btn-lg btn-primary" value="delete" >
+        </div>
+    </div>
+</form>
+{% endif %}
+</div>
+{% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
+
+{% block scripts %}
+    {{super()}}
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
     <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
     <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script>
     first_location = 0
     var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -27,42 +69,56 @@
         tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
         layers: [OpenStreetMap_Mapnik],
         center: orig,
-        zoom: 10,
+        zoom: 12,
         zoomControl: true
     })
-
-
 
     function onLocationFound(e) {
         if (first_location < 1) {
             var bounds = [[e.latlng.lat-0.02,e.latlng.lng-0.02], [e.latlng.lat+0.02,e.latlng.lng+0.02]];
-            var rect = L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
+            rect = new L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
             first_location = first_location + 1
+            $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
         }
     }
 
     alertmap.on('locationfound', onLocationFound);
 
     function onMapClick(e) {
-        if (marker !== null) {
-            alertmap.removeLayer(marker);
+        if (rect !== null) {
+            alertmap.removeLayer(rect);
         }
-        marker = new L.marker([e.latlng.lat,e.latlng.lng]).addTo(alertmap);
-        marker.bindPopup("{{ popup_message }}").openPopup();
+        var bounds = [[e.latlng.lat-0.02,e.latlng.lng-0.02], [e.latlng.lat+0.02,e.latlng.lng+0.02]];
+        rect = new L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
         $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
-        }
+    }
 
     alertmap.on('click', onMapClick);
 
-    lc = L.control.locate({strings: {title:"Localização"}}).addTo(alertmap);
+    lc = L.control.locate({strings: {title:"Localização"}, keepCurrentZoomLevel: true}).addTo(alertmap);
     {% if origem is defined %}
         var orig = [{{ origem[0] }}, {{ origem[1] }}];
         alertmap.panTo(new L.LatLng({{ origem[0] }}, {{ origem[1] }}));
-        marker = new L.marker(orig).addTo(alertmap);
-        marker.bindPopup('{{ popup_message }}').openPopup();
+        var bounds = [[orig[0]-0.02,orig[1]-0.02], [orig[0]+0.02,orig[1]+0.02]];
+        rect = new L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
     {% else %}
         lc.start();
     {% endif %}
     </script>
-</div>
+    <script>
+    $(document).ready(function() {
+    if (!$("#vacina-0").is(":checked") ){
+        $("#vacina-0").trigger("click");
+    }
+    if (!$("#vacina-1").is(":checked") ){
+        $("#vacina-1").trigger("click");
+    }
+    if (!$("#vacina-2").is(":checked") ){
+        $("#vacina-2").trigger("click");
+    }
+    if (!$("#vacina-3").is(":checked") ){
+        $("#vacina-3").trigger("click");
+    }
+    });
+    </script>
 {% endblock %}

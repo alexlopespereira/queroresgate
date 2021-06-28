@@ -42,7 +42,8 @@
         </div>
       <div class="row" style="margin-top:10px">
             <div class="col-xs-12 col-md-12">
-                {{ form.desperdicio.label }} {{ form.desperdicio(disabled=inappropriate_time) }}
+                {{ form.desperdicio.label }} {{ form.desperdicio() }}
+<!--                form.desperdicio(disabled=inappropriate_time) -->
             </div>
       </div>
       {{ form.latlong.label }}
@@ -61,7 +62,6 @@
 <h4>Muito obrigado por sua contribuição!</h4>
     <div id="map"></div>
 {% endif %}
-
 </div>
 {% endblock %}
 
@@ -76,7 +76,7 @@
         maxZoom: 19,
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
-    orig = [-15.7801,-47.9292]
+<!--    orig = [-15.7801,-47.9292]-->
     var map = new L.Map('map', {
         tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
         layers: [OpenStreetMap_Mapnik],

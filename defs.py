@@ -12,6 +12,7 @@ ES_PASSWORD = os.environ.get('ES_PASSWORD') or 'pass'  ## Setar Variavel de Ambi
 ES_USE_SSL = os.environ.get('ES_USE_SSL') == "True"
 ES_VERIFY_CERTS = os.environ.get('ES_VERIFY_CERTS') == "True"
 DASHBOARD_URL = os.environ.get('DASHBOARD_URL') or "https://k.vacinei.org:5601/app/dashboards?auth_provider_hint=anonymous1#/view/e6ac2260-d63a-11eb-b7e8-bdf162e86103?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-3d%2Cto%3Anow))&show-time-filter=true&hide-filter-bar=true"
+SIDE = os.environ.get('SIDE') or 0.02
 
 if ES_USE_SSL:
     APP_PORT = 8080
@@ -19,8 +20,10 @@ if ES_USE_SSL:
 else:
     APP_PORT = 5000
     ES_URL = "http://{0}:{1}".format(ES_HOST, ES_PORT)
-ES_VACINEI_INDEX = os.environ.get('ES_ESOCIAL_INDEX') or 'vacinei__vacinei'
+ES_VACINEI_INDEX = os.environ.get('ES_VACINEI_INDEX') or 'vacinei__vacinei'
+ES_ALERTA_INDEX = os.environ.get('ES_ALERTA_INDEX') or 'alerta__alerta'
 job_vacinei = {"index": ES_VACINEI_INDEX, "settings": body_settings_vacinei, "namespace": "default"}
+job_alerta = {"index": ES_ALERTA_INDEX, "settings": body_settings_vacinei, "namespace": "default"}
 INDEXES = {'vacinei': job_vacinei}
 
 es = Elasticsearch(
