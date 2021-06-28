@@ -112,7 +112,8 @@ def alerta():
                 global records
                 records = []
                 for v in form.vacina.data:
-                    records.append({"location": latlong, "vacina": v, "date": datetime.utcnow().isoformat(), 'email': form.email.data})
+                    records.append({"location": latlong, "vacina": v, "date": datetime.utcnow().isoformat(),
+                                    'email': form.email.data, "id": f"{form.email.data}_{v}"})
                 bulk(es, gendata())
                 orig = [float(f) for f in latlong.split(',')]
                 return render_template('alerta.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, email=form.email.data, origem=orig,

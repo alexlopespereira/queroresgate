@@ -1,6 +1,8 @@
 import os
 
 from elasticsearch import Elasticsearch
+
+from elk.settings_notificacoes import body_settings_notificacoes
 from elk.settings_vacinei import body_settings_vacinei
 
 DEBUG = os.environ.get('DEBUG') == "True"
@@ -22,9 +24,11 @@ else:
     ES_URL = "http://{0}:{1}".format(ES_HOST, ES_PORT)
 ES_VACINEI_INDEX = os.environ.get('ES_VACINEI_INDEX') or 'vacinei__vacinei'
 ES_ALERTA_INDEX = os.environ.get('ES_ALERTA_INDEX') or 'alerta__alerta'
+ES_NOTIFICACOES_INDEX = os.environ.get('ES_NOTIFICACOES_INDEX') or 'notificacoes__notificacoes'
 job_vacinei = {"index": ES_VACINEI_INDEX, "settings": body_settings_vacinei, "namespace": "default"}
 job_alerta = {"index": ES_ALERTA_INDEX, "settings": body_settings_vacinei, "namespace": "default"}
-INDEXES = {'vacinei': job_vacinei}
+job_notificacoes = {"index": ES_NOTIFICACOES_INDEX, "settings": body_settings_notificacoes, "namespace": "default"}
+INDEXES = {'vacinei': job_vacinei, 'alerta': job_alerta, 'notificacoes': job_notificacoes}
 
 es = Elasticsearch(
     hosts=[{'host': ES_HOST, 'port': ES_PORT}],
