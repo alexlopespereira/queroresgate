@@ -2,7 +2,7 @@ import json
 import libgeohash as gh
 import pandas as pd
 from elasticsearch.helpers import bulk
-from defs import es, ES_ALERTA_INDEX, ES_VACINEI_INDEX, ES_NOTIFICACOES_INDEX
+from defs import es, ES_NOTIFICACAO_INDEX, ES_VACINEI_INDEX, ES_MENSAGENS_INDEX
 from elasticsearch_dsl import Search, Q
 from datetime import datetime
 
@@ -16,7 +16,7 @@ PRECISION = 6
 def gendata():
     global records
     for r in records:
-        r.update({"_id": f"{r['id']}", '_op_type': 'index', '_index': ES_NOTIFICACOES_INDEX})
+        r.update({"_id": f"{r['id']}", '_op_type': 'index', '_index': ES_MENSAGENS_INDEX})
         yield r
 
 
@@ -61,7 +61,7 @@ records = []
 
 s.aggs.bucket('per_geohash', 'geohash_grid', field='location', precision=PRECISION) \
     .pipeline('min_bucket_selector', 'bucket_selector', buckets_path={"count": "per_vacina._bucket_count"},
-              script={"source": "params.count >= 0"}) \
+              script={"source": "params.count >= 3"}) \
     .bucket('per_vacina', 'terms', field='vacina')
 
 response = s.execute()
@@ -78,17 +78,17 @@ for hit in response.aggregations.per_geohash.buckets:
             qf = qf | Q('bool', must=Q('term', vacina=h.key), filter=Q('geo_distance', distance=RADIUS, location=hit.key, distance_type="plane"))
 
 if not first:
-    s2 = Search(using=es, index=ES_ALERTA_INDEX)
+    s2 = Search(using=es, index=ES_NOTIFICACAO_INDEX)
     s2.query = qf
     response = s2.execute()
     to_notify = []
     for hit in response.hits.hits:
-        alerta = {'vacina': hit['_source']['vacina'], 'email': hit['_source']['email'], 'notification_type': 'email',
+        mensagem = {'vacina': hit['_source']['vacina'], 'email': hit['_source']['email'], 'notification_type': 'email',
                   'date': datetime.utcnow().isoformat(), 'location': hit['_source']['location'],
                   'id': f"{hit['_source']['email']}_{hit['_source']['vacina']}_{datetime.utcnow().isoformat()}"}
-        to_notify.append(alerta)
+        to_notify.append(mensagem)
     df_to_notify = pd.DataFrame(to_notify)
-    s3 = Search(using=es, index=ES_NOTIFICACOES_INDEX) \
+    s3 = Search(using=es, index=ES_MENSAGENS_INDEX) \
         .filter('range', date={'gte': datetime.utcnow().strftime('%Y-%m-%dT00:00:00.000Z')})
 
     response = s3.execute()

@@ -8,7 +8,7 @@
 
 {{ super() }}
     {% if tosubmit == True %}
-  <form method="POST" action="/alerta">
+  <form method="POST" action="/notificacao">
         {{ form.hidden_tag() }}
         <div class="row" style="margin-top: 10px">
             <div class="col-xs-12 col-md-12">
@@ -42,13 +42,13 @@
 {% else %}
 <h2>{{ email }},</h2>
 <h3>Sua área de interesse foi registrada. </h3>
-<h4>Você receberá emails de alerta em caso de vacinas remanescentes!</h4>
+<h4>Você receberá emails de notificação em caso de vacinas remanescentes!</h4>
 <div id="alertmap"  style="margin-top: 10px"></div>
-<form method="POST" action="/alerta">
+<form method="POST" action="/notificacao">
     {{ form.hidden_tag() }}
     <div class="row" style="margin-top: 10px">
         <div class="col-xs-12 col-md-12">
-             <input type="submit" value="Remover Alerta" class="btn btn-lg btn-primary" value="delete" >
+             <input type="submit" value="Remover Notificação" class="btn btn-lg btn-primary" value="delete" >
         </div>
     </div>
 </form>

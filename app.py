@@ -10,9 +10,9 @@ from flask import Flask, render_template, flash
 from flask import request
 from datetime import datetime
 
-from elk.settings_alerta import body_settings_alerta
-from forms import VacinaForm, AlertaForm, DescadastrarForm  # , VacinaListForm
-from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG, SECRET_KEY, SIDE, ES_ALERTA_INDEX
+from elk.settings_notificacao import body_settings_notificacao
+from forms import VacinaForm, NotificacaoForm, DescadastrarForm  # , VacinaListForm
+from defs import es, ES_VACINEI_INDEX, body_settings_vacinei, APP_PORT, DASHBOARD_URL, DEBUG, SECRET_KEY, SIDE, ES_NOTIFICACAO_INDEX
 import dateutil.parser
 from flask_bootstrap import Bootstrap
 from flaskext.markdown import Markdown
@@ -29,7 +29,7 @@ def check_or_create_index(esc, index, settings):
 
 try:
     check_or_create_index(es, ES_VACINEI_INDEX, body_settings_vacinei)
-    check_or_create_index(es, ES_ALERTA_INDEX, body_settings_alerta)
+    check_or_create_index(es, ES_NOTIFICACAO_INDEX, body_settings_notificacao)
 except elasticsearch.exceptions.ConnectionError as e:
     print(e)
     pass
@@ -55,11 +55,11 @@ records = []
 def gendata():
     global records
     for r in records:
-        doc = {"doc": r, "_id": f"{r['email']}_{r['vacina']}", '_op_type': 'update', 'doc_as_upsert': True, '_index': ES_ALERTA_INDEX}
+        doc = {"doc": r, "_id": f"{r['email']}_{r['vacina']}", '_op_type': 'update', 'doc_as_upsert': True, '_index': ES_NOTIFICACAO_INDEX}
         yield doc
 
 
-def descadastrar_alerta(email):
+def descadastrar_notificacao(email):
     #TODO: implementar o descadastro
     return True
 
@@ -102,10 +102,10 @@ def visualizar():
     return render_template('visualizar.html', dashboard_url=DASHBOARD_URL)
 
 
-@app.route('/alerta', methods=['GET', 'POST'])
-def alerta():
+@app.route('/notificacao', methods=['GET', 'POST'])
+def notificacao():
     if request.method == "POST":
-        form = AlertaForm(request.form)
+        form = NotificacaoForm(request.form)
         if form.validate_on_submit():
             if 'registrar' in request.form:
                 latlong = form.latlong.data
@@ -116,22 +116,22 @@ def alerta():
                                     'email': form.email.data, "id": f"{form.email.data}_{v}"})
                 bulk(es, gendata())
                 orig = [float(f) for f in latlong.split(',')]
-                return render_template('alerta.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, email=form.email.data, origem=orig,
+                return render_template('notificacao.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, email=form.email.data, origem=orig,
                                        popup_message="Sua área foi registrada aqui", side=SIDE)
             else:
-                ret = descadastrar_alerta(form.email.data)
+                ret = descadastrar_notificacao(form.email.data)
                 if ret:
-                    msg = "Seu alerta foi removido com sucesso"
+                    msg = "Sua notificação foi removida com sucesso"
                 else:
-                    msg = "Ocorreu um problema ao remover seu alerta. Tente novamente mais tarde."
+                    msg = "Ocorreu um problema ao remover sua notificação. Tente novamente mais tarde."
                 return render_template('mensagem.html', msg=msg)
         else:
             flash('Todos os campos são obrigatórios', category='error')
-            return render_template('alerta.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, side=SIDE)
+            return render_template('notificacao.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, side=SIDE)
     else:
-        form = AlertaForm()
+        form = NotificacaoForm()
         # form = VacinaForm(data=MultiDict(data_items))
-        return render_template('alerta.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, side=SIDE)
+        return render_template('notificacao.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, side=SIDE)
 
 
 @app.route('/sobre', methods=['GET'])
@@ -141,7 +141,7 @@ def sobre():
 @app.route('/descadastrar', methods=['POST'])
 def descadastrar():
     descadastrar_form = DescadastrarForm()
-    return render_template('alerta.html', descadastrar_form=descadastrar_form)
+    return render_template('notificacao.html', descadastrar_form=descadastrar_form)
 
 
 if __name__ == '__main__':

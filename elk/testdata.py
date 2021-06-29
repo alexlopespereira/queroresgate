@@ -1,6 +1,6 @@
 from elasticsearch.helpers import bulk
 from datetime import datetime
-from defs import es, ES_ALERTA_INDEX, ES_VACINEI_INDEX
+from defs import es, ES_NOTIFICACAO_INDEX, ES_VACINEI_INDEX
 from elasticsearch_dsl import Search
 import pandas as pd
 import json
@@ -22,17 +22,18 @@ def create_vacinei_json(file):
     df.to_json(file, orient="records")
 
 
-def create_alerta_json(file):
-    s = Search(using=es, index=ES_ALERTA_INDEX)
+def create_notificacao_json(file):
+    s = Search(using=es, index=ES_NOTIFICACAO_INDEX)
     response = s.execute()
     result = []
     for hit in response.hits.hits:
-        alerta = {"email": hit['_source']['email'], "location": hit['_source']['location'], "vacina": hit['_source']['vacina'],
+        notificacao = {"email": hit['_source']['email'], "location": hit['_source']['location'], "vacina": hit['_source']['vacina'],
                   "id": hit['_id'], "date": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.000Z')} #, "alerted_today": False
-        result.append(alerta)
+        result.append(notificacao)
 
     df = pd.DataFrame(data=result)
     df.to_json(file, orient="records")
+
 
 def gendata_vacinei():
     global records
@@ -40,12 +41,14 @@ def gendata_vacinei():
         doc = {"doc": r, "_id": r['id'], '_op_type': 'update', 'doc_as_upsert': True, '_index': ES_VACINEI_INDEX}
         yield doc
 
+
 def gendata():
     global records
     global index
     for r in records:
         doc = {"doc": r, "_id": r['id'], '_op_type': 'update', 'doc_as_upsert': True, '_index': index}
         yield doc
+
 
 def index_vacinei(file):
     global records
@@ -59,6 +62,7 @@ def index_vacinei(file):
 
         bulk(es, gendata_vacinei())
 
+
 def index_generic(file, curr_index):
     global records
     global index
@@ -68,6 +72,6 @@ def index_generic(file, curr_index):
         bulk(es, gendata())
 
 # index_vacinei("./testdata.json")
-file_alertas = "./testdata_alertas.json"
-# create_alerta_json(file_alertas)
-index_generic(file_alertas, ES_ALERTA_INDEX)
+file_notificao = "./testdata_notificacao.json"
+# create_notificacao_json(file_notificao)
+index_generic(file_notificao, ES_NOTIFICACAO_INDEX)

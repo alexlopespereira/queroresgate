@@ -1,5 +1,5 @@
 
-body_settings_notificacoes = {
+body_settings_notificacao = {
   "settings": {
     "number_of_shards": 1,
     "number_of_replicas": 1
@@ -7,9 +7,6 @@ body_settings_notificacoes = {
   "mappings": {
     "properties": {
       "email": {
-        "type": "keyword"
-      },
-      "telefone": {
         "type": "keyword"
       },
       "location": {
@@ -24,9 +21,10 @@ body_settings_notificacoes = {
         "type":   "date",
         "format": "date_optional_time"
       },
-      "notification_type":
+      "alerted_today":
       {
-        "type":   "keyword"
+        "type":   "boolean",
+        "null_value": False
       }
     }
   }
