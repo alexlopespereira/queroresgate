@@ -1,8 +1,13 @@
 import yagmail
 
+vacinei_user = 'vacinei.org@gmail.com'
+vacinei_app_password = 'mgbhbmxclumskbks'
+
+direct_user = 'alexlopespereira@gmail.com'
+direct_app_password = 'kiierelodivysfwm'
+
+
 def send_email(to, nreports, type_vacina, google_maps_url):
-    user = 'vacinei.org@gmail.com'
-    app_password = 'mgbhbmxclumskbks'
     subject = 'Alerta de Vacina Disponível'
     html = f"""\
     <html>
@@ -18,10 +23,31 @@ def send_email(to, nreports, type_vacina, google_maps_url):
     """
     content = [html]
 
-    with yagmail.SMTP(user, app_password) as yag:
+    with yagmail.SMTP(vacinei_user, vacinei_app_password) as yag:
         ret = yag.send(to, subject, content)
 
     return True
+
+
+def mala_direta(tolist):
+    subject = 'Alerta de Vacina Disponível'
+    for l in tolist:
+        html = f"""\
+        <html>
+          <body>
+            <p>Ola {l['to']},<br>
+               Informamos que <b>{l['']}</b> usuários reportaram que hoje há doses remanescentes da vacina <b>{l['']}</b> na sua região de interesse <a href="{l['']}">aqui</a>  <br>
+               Recomendamos ligar no local de vacinação para validar a informação antes de comparecer. <br>
+    
+               Você pode remover este alerta em <a href="https://vacinei.org/alerta">https://vacinei.org/alerta</a>  <br> 
+            </p>
+          </body>
+        </html>
+        """
+        content = [html]
+
+        with yagmail.SMTP(vacinei_user, vacinei_app_password) as yag:
+            ret = yag.send(l['email'], subject, content)
 
 
 if __name__ == '__main__':
