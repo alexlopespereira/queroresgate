@@ -19,7 +19,7 @@ def send_email(to, nreports, type_vacina, google_maps_url):
     with yagmail.SMTP(user, app_password) as yag:
         ret = yag.send(to, subject, content)
 
-    return bool(ret)
+    return True
 
 
 if __name__ == '__main__':

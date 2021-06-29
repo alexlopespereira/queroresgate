@@ -1,5 +1,5 @@
 import json
-import geohash
+import libgeohash as gh
 import pandas as pd
 from elasticsearch.helpers import bulk
 from defs import es, ES_ALERTA_INDEX, ES_VACINEI_INDEX, ES_NOTIFICACOES_INDEX
@@ -8,9 +8,9 @@ from datetime import datetime
 
 from elk.send_email import send_email
 
-RADIUS = "10km"  # TODO: mudar para 5km
+RADIUS = "3km"  # TODO: mudar para 5km
 BOUDING_BOX_BRASIL = {"top_left": "6.759092, -73.701466", "bottom_right": "-36.110702, -32.822774"}
-PRECISION = 5
+PRECISION = 6
 
 
 def gendata():
@@ -20,11 +20,34 @@ def gendata():
         yield r
 
 
+def get_counts(hashes, thresold, point):
+    min_hash = None
+    min_dist = thresold
+    for k in hashes.keys():
+        dist = gh.distance(k, point)
+        if dist < min_dist:
+            min_dist = dist
+            min_hash = k
+    if min_dist < thresold:
+        return hashes[min_hash]['count'], min_hash
+    else:
+        return None
+
+
 def send_emails(df_tasks, bucket_count):
-    for t in df_tasks.iterrows:
-        currentgeohash = geohash.encode(*t['location'].split(','), PRECISION)
-        ret = send_email(t['email'], bucket_count[currentgeohash]['count'], t['vacina'], f"https://www.google.com/maps/search/?api=1&query={t['location']}")
-        t['success'] = ret
+    success = []
+    for t in df_tasks.iterrows():
+        orig = [float(f) for f in t[1]['location'].split(',')]
+        currentgeohash = gh.encode(*orig, precision=PRECISION)
+        filtered_buckets = dict(filter(lambda elem: elem[1]['vacina'] == t[1]['vacina'], bucket_count.items()))
+        counts, min_hash = get_counts(filtered_buckets, int(RADIUS[:-2])*1000, currentgeohash)
+        if counts is not None:
+            ret = send_email(t[1]['email'], counts, t[1]['vacina'], f"https://www.google.com/maps/search/?api=1&query={t[1]['location']}")
+            success.append(ret)
+        else:
+            success.append(False)
+            print("error: get_counts(bucket_count, RADIUS, currentgeohash) is None")
+    df_tasks['success'] = success
 
 
 s = Search(using=es, index=ES_VACINEI_INDEX) \
@@ -66,21 +89,22 @@ if not first:
     df_to_notify = pd.DataFrame(to_notify)
     s3 = Search(using=es, index=ES_NOTIFICACOES_INDEX) \
         .filter('range', date={'gte': datetime.utcnow().strftime('%Y-%m-%dT00:00:00.000Z')})
-    print(json.dumps(s3.to_dict()))
+
     response = s3.execute()
     notified = []
     for hit in response.hits.hits:
         notified.append(hit['_source'].to_dict())
-    df_notified = pd.DataFrame(notified)
-    df_diff = df_to_notify.merge(df_notified, how='outer', indicator=True, on=['email', 'vacina'], suffixes=['', '_y']).loc[
-        lambda x: x['_merge'] == 'left_only']
-    df_diff = df_diff[['vacina', 'email', 'notification_type', 'date', 'location', 'id']]
-    send_emails(df_diff)
-    records = df_diff[['vacina', 'email', 'notification_type', 'date', 'location', 'id']].to_dict('records')
 
-    bulk(es, gendata())
+    if notified:
+        df_notified = pd.DataFrame(notified)
+        df_diff = df_to_notify.merge(df_notified, how='outer', indicator=True, on=['email', 'vacina'],
+                                     suffixes=['', '_y']).loc[lambda x: x['_merge'] == 'left_only']
+        df_diff = df_diff[['vacina', 'email', 'notification_type', 'date', 'location', 'id']]
+    else:
+        df_diff = df_to_notify
+    if not df_diff.empty:
+        send_emails(df_diff, count_buckets)
+        df_diff = df_diff[df_diff['success'] == True]
+        records = df_diff[['vacina', 'email', 'notification_type', 'date', 'location', 'id']].to_dict('records')
+        bulk(es, gendata())
 
-# q1 = Q('bool', must=Q('term', vacina='pfizer'), filter=Q('geo_distance', distance=radius, location="6vjvv", distance_type="plane"))
-# q2 = Q('bool', must=Q('term', vacina='jansen'), filter=Q('geo_distance', distance=radius, location="6vjvv", distance_type="plane"))
-# print(q.to_dict())
-#     .filter('geo_distance', distance='{0}m'.format(radius), geohome={"lat": point[0], "lon": point[1]})

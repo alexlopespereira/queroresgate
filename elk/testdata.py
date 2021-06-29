@@ -67,7 +67,7 @@ def index_generic(file, curr_index):
         records = json.load(json_file)
         bulk(es, gendata())
 
-# index_json("./testdata.json")
+# index_vacinei("./testdata.json")
 file_alertas = "./testdata_alertas.json"
 # create_alerta_json(file_alertas)
 index_generic(file_alertas, ES_ALERTA_INDEX)
