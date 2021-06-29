@@ -43,6 +43,7 @@ def send_emails(df_tasks, bucket_count):
         counts, min_hash = get_counts(filtered_buckets, int(RADIUS[:-2])*1000, currentgeohash)
         if counts is not None:
             ret = send_email(t[1]['email'], counts, t[1]['vacina'], f"https://www.google.com/maps/search/?api=1&query={t[1]['location']}")
+            print(f"sent email to {t[1]['email']}, counts={counts}, vacina={t[1]['vacina']}")
             success.append(ret)
         else:
             success.append(False)
