@@ -66,8 +66,8 @@ records = []
 
 s.aggs.bucket('per_geohash', 'geohash_grid', field='location', precision=PRECISION) \
     .pipeline('min_bucket_selector', 'bucket_selector', buckets_path={"count": "per_vacina._bucket_count"},
-              script={"source": "params.count >= 0"}) \
-    .bucket('per_vacina', 'terms', field='vacina') #TODO: mudar para >= 3
+              script={"source": "params.count >= 3"}) \
+    .bucket('per_vacina', 'terms', field='vacina')
 
 response = s.execute()
 results = {}
