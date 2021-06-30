@@ -2,7 +2,10 @@ import json
 import libgeohash as gh
 import pandas as pd
 from elasticsearch.helpers import bulk
-from defs import es, ES_NOTIFICACAO_INDEX, ES_VACINEI_INDEX, ES_MENSAGENS_INDEX
+try:
+	from defs import es, ES_NOTIFICACAO_INDEX, ES_VACINEI_INDEX, ES_MENSAGENS_INDEX
+except ModuleNotFoundError:
+	from .defs import es, ES_NOTIFICACAO_INDEX, ES_VACINEI_INDEX, ES_MENSAGENS_INDEX
 from elasticsearch_dsl import Search, Q
 from datetime import datetime
 
@@ -12,6 +15,7 @@ RADIUS = "3km"  # TODO: mudar para 5km
 BOUDING_BOX_BRASIL = {"top_left": "6.759092, -73.701466", "bottom_right": "-36.110702, -32.822774"}
 PRECISION = 6
 
+print(f"starting: {datetime.utcnow().isoformat()}")
 
 def gendata():
     global records
@@ -109,3 +113,4 @@ if not first:
         records = df_diff[['vacina', 'email', 'notification_type', 'date', 'location', 'id']].to_dict('records')
         bulk(es, gendata())
 
+print(f"finishing: {datetime.utcnow().isoformat()}")

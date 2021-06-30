@@ -1,9 +1,11 @@
 import os
-
 from elasticsearch import Elasticsearch
-
-from elk.settings_mensagens import body_settings_mensagens
-from elk.settings_vacinei import body_settings_vacinei
+try:
+    from elk.settings_mensagens import body_settings_mensagens
+    from elk.settings_vacinei import body_settings_vacinei
+except Exception:
+    from settings_mensagens import body_settings_mensagens
+    from settings_vacinei import body_settings_vacinei
 
 DEBUG = os.environ.get('DEBUG') == "True"
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'developmentdfgsdg43539405332dfgsdf'

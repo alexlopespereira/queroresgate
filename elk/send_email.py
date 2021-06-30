@@ -70,6 +70,6 @@ def mala_direta(skip=0):
             sleep(1)
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # send_email('alexlopespereira@gmail.com', 10, 'pfizer', "https://www.google.com/maps/search/?api=1&query=-15.795026,-47.852150")
-    mala_direta(117)
+    # mala_direta(117)

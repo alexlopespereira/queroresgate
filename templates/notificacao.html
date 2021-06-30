@@ -79,7 +79,7 @@
 
     function onLocationFound(e) {
         if (first_location < 1) {
-            var bounds = [[e.latlng.lat-0.02,e.latlng.lng-0.02], [e.latlng.lat+0.02,e.latlng.lng+0.02]];
+            var bounds = [[e.latlng.lat-0.08,e.latlng.lng-0.08], [e.latlng.lat+0.08,e.latlng.lng+0.08]];
             rect = new L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
             first_location = first_location + 1
             $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
@@ -92,7 +92,7 @@
         if (rect !== null) {
             alertmap.removeLayer(rect);
         }
-        var bounds = [[e.latlng.lat-0.02,e.latlng.lng-0.02], [e.latlng.lat+0.02,e.latlng.lng+0.02]];
+        var bounds = [[e.latlng.lat-0.08,e.latlng.lng-0.08], [e.latlng.lat+0.08,e.latlng.lng+0.08]];
         rect = new L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
         $('#latlong').val(e.latlng.lat + "," + e.latlng.lng);
     }
@@ -103,7 +103,7 @@
     {% if origem is defined %}
         var orig = [{{ origem[0] }}, {{ origem[1] }}];
         alertmap.panTo(new L.LatLng({{ origem[0] }}, {{ origem[1] }}));
-        var bounds = [[orig[0]-0.02,orig[1]-0.02], [orig[0]+0.02,orig[1]+0.02]];
+        var bounds = [[orig[0]-0.08,orig[1]-0.08], [orig[0]+0.08,orig[1]+0.08]];
         rect = new L.rectangle(bounds, {color: 'blue', weight: 1}).addTo(alertmap);
     {% else %}
         lc.start();
