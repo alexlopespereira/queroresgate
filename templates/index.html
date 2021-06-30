@@ -8,6 +8,8 @@
 
 {{ super() }}
 {% if tosubmit == True %}
+    <br>
+    <h3>Pergunte ao infermeiro e ajude seus amigos informando se há doses remanescentes.</h3>
   <form method="POST" action="/">
         {{ form.hidden_tag() }}
         <div class="row">
@@ -86,6 +88,18 @@
     function openpopup(){
         marker.bindPopup("{{ popup_message }}").openPopup();
     }
+
+    function onLocationError(e) {
+        console.log(e)
+        $.toast({
+            type: 'warning',
+            title: 'Habilite a localização',
+            subtitle: '11 mins ago',
+            content: 'Se você não habilitar a localização no seu nagegador, o mapa não aparece.',
+            delay: 20000
+        });
+    }
+    map.on('locationerror', onLocationError);
 
     function onLocationFound(e) {
         if (first_location < 1) {

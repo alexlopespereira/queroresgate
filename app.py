@@ -36,7 +36,7 @@ except elasticsearch.exceptions.ConnectionError as e:
 
 app = Flask(__name__)
 recaptcha = ReCaptcha(app=app)
-Bootstrap(app)
+bootstrap = Bootstrap(app)
 Markdown(app)
 
 app.config['SECRET_KEY'] = SECRET_KEY

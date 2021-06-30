@@ -7,7 +7,23 @@
 <div class="container">
 
 {{ super() }}
+    <div class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="toast-header">
+    <img src="..." class="rounded mr-2" alt="...">
+    <strong class="mr-auto">Bootstrap</strong>
+    <small>11 mins ago</small>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="toast-body">
+    Hello, world! This is a toast message.
+  </div>
+</div>
+
     {% if tosubmit == True %}
+    <br>
+    <h3>Seja notificado sobre a disponibilidade de vacinas na sua região.</h3>
   <form method="POST" action="/notificacao">
         {{ form.hidden_tag() }}
         <div class="row" style="margin-top: 10px">
@@ -31,7 +47,7 @@
             </div>
         </div>
         <div class="row" style="margin-top: 10px">
-            <div class="col-xs-3 col-md-3">
+            <div class="col-xs-4 col-md-4">
                 {{ form.registrar(class="btn btn-lg btn-primary") }}
             </div>
             <div class="col-xs-3 col-md-3">
@@ -59,10 +75,23 @@
 
 {% block scripts %}
     {{super()}}
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
     <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
     <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
     <script>
+    $.toastDefaults = {
+        position: 'top-right', /** top-left/top-right/top-center/bottom-left/bottom-right/bottom-center - Where the toast will show up **/
+        dismissible: true, /** true/false - If you want to show the button to dismiss the toast manually **/
+        stackable: true, /** true/false - If you want the toasts to be stackable **/
+        pauseDelayOnHover: true, /** true/false - If you want to pause the delay of toast when hovering over the toast **/
+        style: {
+            toast: '', /** Classes you want to apply separated my a space to each created toast element (.toast) **/
+            info: '', /** Classes you want to apply separated my a space to modify the "info" type style  **/
+            success: '', /** Classes you want to apply separated my a space to modify the "success" type style  **/
+            warning: '', /** Classes you want to apply separated my a space to modify the "warning" type style  **/
+            error: '', /** Classes you want to apply separated my a space to modify the "error" type style  **/
+        }
+    };
     first_location = 0
     var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -73,7 +102,7 @@
         tap: false, // ref https://github.com/Leaflet/Leaflet/issues/7255
         layers: [OpenStreetMap_Mapnik],
         center: orig,
-        zoom: 12,
+        zoom: 11,
         zoomControl: true
     })
 
@@ -86,7 +115,21 @@
         }
     }
 
+    function onLocationError(e) {
+        console.log(e)
+        $.toast({
+            type: 'warning',
+            title: 'Habilite a localização',
+            subtitle: '11 mins ago',
+            content: 'Se você não habilitar a localização no seu nagegador, o mapa não aparece.',
+            delay: 20000
+        });
+    }
+    alertmap.on('locationerror', onLocationError);
+
     alertmap.on('locationfound', onLocationFound);
+
+
 
     function onMapClick(e) {
         if (rect !== null) {

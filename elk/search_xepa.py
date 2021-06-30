@@ -11,7 +11,7 @@ from datetime import datetime
 
 from elk.send_email import send_email
 
-RADIUS = "3km"  # TODO: mudar para 5km
+RADIUS = "13km"  # TODO: mudar para 5km
 BOUDING_BOX_BRASIL = {"top_left": "6.759092, -73.701466", "bottom_right": "-36.110702, -32.822774"}
 PRECISION = 6
 
@@ -114,3 +114,4 @@ if not first:
         bulk(es, gendata())
 
 print(f"finishing: {datetime.utcnow().isoformat()}")
+

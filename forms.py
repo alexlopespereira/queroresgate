@@ -14,7 +14,7 @@ class VacinaForm(FlaskForm):
     email = EmailField('Email: ',validators=[DataRequired(), Email()], description="joao@gmail.com")
     idade = IntegerField("Idade: ", description="50", validators=[DataRequired()])
     data = StringField("Data da vacinação: ", default=datetime.today().strftime("%d-%m-%Y"), validators=[DataRequired()])
-    desperdicio = SelectField(u'Há doses remanescentes hoje: ', choices=[(1, 'Sim'), (0, 'Não')], default=0, coerce=int)
+    desperdicio = SelectField(u'Há doses remanescentes hoje (pergunte ao enfermeiro): ', choices=[(1, 'Sim'), (0, 'Não')], default=0, coerce=int)
     if not DEBUG:
         recaptcha = RecaptchaField()
     latlong = StringField(u'Marque no mapa o seu local de vacinação:', widget=HiddenInput())
