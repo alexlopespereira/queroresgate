@@ -11,7 +11,7 @@ from datetime import datetime
 
 from elk.send_email import send_email
 
-RADIUS = "13km"  # TODO: mudar para 5km
+RADIUS = "13km"  #
 BOUDING_BOX_BRASIL = {"top_left": "6.759092, -73.701466", "bottom_right": "-36.110702, -32.822774"}
 PRECISION = 6
 
@@ -46,7 +46,8 @@ def send_emails(df_tasks, bucket_count):
         filtered_buckets = dict(filter(lambda elem: elem[1]['vacina'] == t[1]['vacina'], bucket_count.items()))
         counts, min_hash = get_counts(filtered_buckets, int(RADIUS[:-2])*1000, currentgeohash)
         if counts is not None:
-            ret = send_email(t[1]['email'], counts, t[1]['vacina'], f"https://www.google.com/maps/search/?api=1&query={t[1]['location']}")
+            notification_point = gh.decode(min_hash, PRECISION)[0:2]
+            ret = send_email(t[1]['email'], counts, t[1]['vacina'], f"https://www.google.com/maps/search/?api=1&query={notification_point}")
             print(f"sent email to {t[1]['email']}, counts={counts}, vacina={t[1]['vacina']}")
             success.append(ret)
         else:
@@ -65,8 +66,8 @@ records = []
 
 s.aggs.bucket('per_geohash', 'geohash_grid', field='location', precision=PRECISION) \
     .pipeline('min_bucket_selector', 'bucket_selector', buckets_path={"count": "per_vacina._bucket_count"},
-              script={"source": "params.count >= 3"}) \
-    .bucket('per_vacina', 'terms', field='vacina')
+              script={"source": "params.count >= 0"}) \
+    .bucket('per_vacina', 'terms', field='vacina') #TODO: mudar para >= 3
 
 response = s.execute()
 results = {}
