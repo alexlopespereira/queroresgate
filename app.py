@@ -73,7 +73,12 @@ def get_geolocation(ip):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     current_hour = datetime.utcnow().hour
-    inappropriate_time = current_hour > 21 or current_hour < 15
+    if current_hour > 21:
+        inappropriate_time = 'Após as 18h esta opção fica indisponível.'
+    elif current_hour < 15:
+        inappropriate_time = 'Antes das 12h esta opção fica indisponível.'
+    else:
+        inappropriate_time = ''
     if request.method == "POST":
         form = VacinaForm(request.form)
         if form.validate_on_submit():
