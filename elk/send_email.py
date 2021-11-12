@@ -4,10 +4,10 @@ import pandas as pd
 import yagmail
 
 vacinei_user = 'vacinei.org@gmail.com'
-vacinei_app_password = 'mgbhbmxclumskbks'
+vacinei_app_password = 'minhasenha'
 
 direct_user = 'alexlopespereira@gmail.com'
-direct_app_password = 'kiierelodivysfwm'
+direct_app_password = 'minhasenha'
 
 
 def send_email(to, nreports, type_vacina, google_maps_url):
