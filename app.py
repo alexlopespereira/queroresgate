@@ -8,6 +8,7 @@ from flask import request
 from forms import ResgateForm
 from defs import DEBUG, VERIFY_URL
 from flask_bootstrap import Bootstrap
+from backend.send_email import send_email
 
 
 from dotenv import load_dotenv, find_dotenv
