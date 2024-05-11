@@ -2,11 +2,11 @@ import json
 import sys
 import os
 import requests as requests
-from flask import Flask, render_template, flash
+from flask import Flask, render_template, flash, abort
 from flask import request
 
 from forms import ResgateForm
-from defs import DEBUG
+from defs import DEBUG, VERIFY_URL
 from flask_bootstrap import Bootstrap
 
 
@@ -46,25 +46,26 @@ def get_geolocation(ip):
     j = json.loads(r.text)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def index():
-    if request.method == "POST":
-        form = ResgateForm(request.form)
-        if form.validate_on_submit():
-            latlong = form.latlong.data
-            email = form.email.data
-            localtion = [float(f) for f in latlong.split(',')]
-            # enviar email
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY,
-                                   email=form.email.data, origem=localtion)
-        else:
-            flash('Todos os campos são obrigatórios', category='error')
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
+    form = ResgateForm()
+    return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
-    else:
-        form = ResgateForm()
-        return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
+@app.route('/solicitar', methods=['POST'])
+def solicitar():
+    form = ResgateForm(request.form)
+    secret_response = request.form['g-recaptcha-response']
 
+    verify_response = requests.post(url=f'{VERIFY_URL}?secret={RECAPTCHA_PRIVATE_KEY}&response={secret_response}').json()
+
+    if verify_response['success'] == False or verify_response['score'] < 0.5:
+        abort(401)
+
+    latlong = form.latlong.data
+    email = form.email.data
+    localtion = [float(f) for f in latlong.split(',')]
+
+    return render_template('message.html', msg="Enviamos um email para as forças de segurança com os seus dados.")
 
 @app.route('/sobre', methods=['GET'])
 def sobre():

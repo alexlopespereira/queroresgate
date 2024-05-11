@@ -12,7 +12,6 @@ class ResgateForm(FlaskForm):
     nome = StringField("Nome: ", validators=[DataRequired()])
     endereco = StringField("Endereço: ", validators=[DataRequired()])
     latlong = StringField(u'Marque no mapa a sua localização:', widget=HiddenInput())
-    recaptcha = RecaptchaField()
     informar = SubmitField('Informar')
 
 
