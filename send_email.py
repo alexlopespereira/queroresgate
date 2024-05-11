@@ -1,5 +1,5 @@
 import os
-from time import sleep
+import datetime
 
 import yagmail
 
@@ -25,6 +25,7 @@ def send_email(org_dest, dest_email, nome, email, telefone, endereco, localizaca
           <li>Email: {email}</li>
           <li>Telefone: {telefone}</li>
           <li>Endereço: {endereco}</li>
+          <li>Data / Hora: {datetime.datetime.now()}</li>
           <li><a href="http://maps.google.com/?q={localizacao}">Geolocalizacao</a></li>
         </ul> 
       <br>
@@ -38,4 +39,5 @@ def send_email(org_dest, dest_email, nome, email, telefone, endereco, localizaca
 
 # Se quiser testar, só usar a linha abaixo
 # send_email('teste_org', 'teste_nome', 'queroresgate2024@gmail.com', 'https://estado.rs.gov.br/simbolos')
+# send_email('teste_org', 'teste_nome', 'queroresgate2024@gmail.com', 'https://estado.rs.gov.br/simbolos', 'teste_nome','teste_nome','teste_nome')
 
