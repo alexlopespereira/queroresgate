@@ -8,7 +8,7 @@ load_dotenv(find_dotenv())
 
 GMAIL_PASSWORD = os.getenv('GMAIL_PASSWORD')
 
-vacinei_user = 'queroresgate2024@gmail.com'
+vacinei_user = 'demanda.resgate@gmail.com'
 vacinei_app_password = GMAIL_PASSWORD
 
 direct_user = 'alexlopespereira@gmail.com'
@@ -33,9 +33,9 @@ def send_email(org_dest, nome, email, google_maps_url):
     </html>
     """
     content = [html]
-
     with yagmail.SMTP(vacinei_user, vacinei_app_password) as yag:
         ret = yag.send(email, subject, content)
-
     return True
 
+# Se quiser testar, só usar a linha abaixo
+# send_email('teste_org', 'teste_nome', 'queroresgate2024@gmail.com', 'https://estado.rs.gov.br/simbolos')

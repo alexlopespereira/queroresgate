@@ -8,6 +8,7 @@ from flask import request
 from forms import ResgateForm
 from defs import DEBUG
 from flask_bootstrap import Bootstrap
+from backend.send_email import send_email
 
 
 from dotenv import load_dotenv, find_dotenv
@@ -54,8 +55,8 @@ def index():
             latlong = form.latlong.data
             email = form.email.data
             localtion = [float(f) for f in latlong.split(',')]
-            # enviar email
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY,
+            # send_email(org_dest, nome, email, google_maps_url)
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui",site_key=RECAPTCHA_PUBLIC_KEY,
                                    email=form.email.data, origem=localtion)
         else:
             flash('Todos os campos são obrigatórios', category='error')
