@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, SubmitField
 from wtforms.fields.simple import EmailField
 from wtforms.validators import DataRequired, Email
@@ -12,5 +12,9 @@ class ResgateForm(FlaskForm):
     nome = StringField("Nome: ", validators=[DataRequired()])
     endereco = StringField("Endereço: ", validators=[DataRequired()])
     latlong = StringField(u'Marque no mapa a sua localização:', widget=HiddenInput())
+    recaptcha = RecaptchaField()
     informar = SubmitField('Informar')
+
+
+
 

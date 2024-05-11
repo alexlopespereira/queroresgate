@@ -8,12 +8,15 @@ from flask import request
 from forms import ResgateForm
 from defs import DEBUG
 from flask_bootstrap import Bootstrap
+from backend.send_email import send_email
 
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 SECRET_KEY = os.getenv('SECRET_KEY')
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 APP_PORT = 8080
 
 
@@ -24,13 +27,10 @@ bootstrap = Bootstrap(app)
 
 app.config['SECRET_KEY'] = SECRET_KEY
 # app.config['RECAPTCHA_ENABLED'] = True
-# app.config['RECAPTCHA_PUBLIC_KEY'] = '6Lc9Y1obAAAAAM-7g3G29a_-CHg2O0Cl81YAR-0l'
-# app.config['RECAPTCHA_PRIVATE_KEY'] = '6Lc9Y1obAAAAAN6YQEC1nLkyAp03FQMpemNiKc7M'
-# app.config['RECAPTCHA_THEME'] = 'white'
-# app.config['RECAPTCHA_TYPE'] = 'image'
-# app.config['RECAPTCHA_SIZE'] = 'compact'
-# app.config['RECAPTCHA_USE_SSL'] = False
-# app.config['RECAPTCHA_RTABINDEX'] = 10
+app.config['RECAPTCHA_USE_SSL'] = False
+app.config['RECAPTCHA_PUBLIC_KEY'] = RECAPTCHA_PUBLIC_KEY
+app.config['RECAPTCHA_PRIVATE_KEY'] = RECAPTCHA_PRIVATE_KEY
+app.config['RECAPTCHA_OPTIONS'] = {'theme': 'white'}
 
 records = []
 
@@ -55,39 +55,17 @@ def index():
             latlong = form.latlong.data
             email = form.email.data
             localtion = [float(f) for f in latlong.split(',')]
-            # enviar email
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui",
+            # send_email(org_dest, nome, email, google_maps_url)
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui",site_key=RECAPTCHA_PUBLIC_KEY,
                                    email=form.email.data, origem=localtion)
         else:
             flash('Todos os campos são obrigatórios', category='error')
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui")
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
     else:
         form = ResgateForm()
-        return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui")
+        return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
-
-# @app.route('/solicitar', methods=['GET', 'POST'])
-# def solicitar():
-#     if request.method == "POST":
-#         form = NotificacaoForm(request.form)
-#         if form.validate_on_submit():
-#             latlong = form.latlong.nome
-#             global records
-#             records = []
-#             for v in form.vacina.nome:
-#                 records.append({"location": latlong, "vacina": v, "date": datetime.utcnow().isoformat(),
-#                                 'email': form.email.nome, "id": f"{form.email.nome}_{v}"})
-#             orig = [float(f) for f in latlong.split(',')]
-#             return render_template('notificacao.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, email=form.email.nome, origem=orig,
-#                                    popup_message="Sua área foi registrada aqui", side=SIDE)
-#         else:
-#             flash('Todos os campos são obrigatórios', category='error')
-#             return render_template('notificacao.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, side=SIDE)
-#     else:
-#         form = NotificacaoForm()
-#         return render_template('notificacao.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, side=SIDE)
-#
 
 @app.route('/sobre', methods=['GET'])
 def sobre():
