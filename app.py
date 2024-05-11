@@ -55,15 +55,15 @@ def index():
             email = form.email.data
             localtion = [float(f) for f in latlong.split(',')]
             # enviar email
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui",
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY,
                                    email=form.email.data, origem=localtion)
         else:
             flash('Todos os campos são obrigatórios', category='error')
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui")
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
     else:
         form = ResgateForm()
-        return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui")
+        return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
 
 @app.route('/sobre', methods=['GET'])

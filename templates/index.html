@@ -15,7 +15,7 @@
                 {% if torecaptcha == True %}
                     {{ form.recaptcha }}
                 {% endif %}
-                <input type="submit" value="Enviar" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="reCAPTCHA_site_key" data-callback='onSubmit'  data-action='submit'>
+                <input type="submit" value="Enviar" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit'>
             </div>
       </div>
     </br>
