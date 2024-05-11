@@ -15,7 +15,6 @@
             <link rel="stylesheet" href="{{url_for('static', filename='control/L.Control.Locate.min.css')}}">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs4-toast@1.2.0/dist/toast.min.css">
         {% endblock %}
-
         <title>Quero Resgate</title>
         {% endblock %}
     </head>
@@ -40,8 +39,14 @@
         {% block content %}{% endblock %}
 
         {% block scripts %}
-            <!-- Optional JavaScript -->
-<!--            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+            <!-- reCaptcha Integration -->
+            <script src="https://www.google.com/recaptcha/api.js"></script>
+            <script>
+               function onSubmit(token) {
+                 document.getElementById("resgate-form").submit();
+               }
+             </script>
+
             {{ bootstrap.load_js() }}
             <script>
             $(document).ready(function() {
