@@ -1,18 +1,14 @@
 import json
 import sys
-import urllib
 import os
-# from flask_recaptcha import ReCaptcha
 import requests as requests
 from flask import Flask, render_template, flash
 from flask import request
-from datetime import datetime
 
 from forms import ResgateForm
-from defs import DEBUG, SIDE
-import dateutil.parser
+from defs import DEBUG
 from flask_bootstrap import Bootstrap
-# from flaskext.markdown import Markdown
+
 
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
