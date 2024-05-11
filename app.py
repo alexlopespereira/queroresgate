@@ -56,11 +56,12 @@ def index():
     if request.method == "POST":
         form = ResgateForm(request.form)
         if form.validate_on_submit():
-            latlong = form.latlong.nome
-            data_vacinacao = dateutil.parser.parse(form.nome.nome)
-            orig = [float(f) for f in latlong.split(',')]
+            latlong = form.latlong.data
+            email = form.email.data
+            localtion = [float(f) for f in latlong.split(',')]
+            # enviar email
             return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=False, popup_message="Estou aqui",
-                                   email=form.email.nome, origem=orig)
+                                   email=form.email.data, origem=localtion)
         else:
             flash('Todos os campos são obrigatórios', category='error')
             return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui")
