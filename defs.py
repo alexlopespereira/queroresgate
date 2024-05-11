@@ -12,5 +12,5 @@ contatos = {"Caxias do Sul": {"email": "caxiasdosul@casamilitar.rs.gov.br", "org
             "Pelotas": {"email": "defesacivil-regionalsul@casamilitar.rs.gov.br", "orgao": "Defesa Civil de Pelotas"},
             "Santa Maria": {"email": "defesacivil-santamaria@cm.rs.gov.br", "orgao": "Defesa Civil de Santa Maria"},
             "Passo Fundo": {"email": "defesacivil-passofundo@casamilitar.rs.gov.br", "orgao": "Defesa Civil de Passo Fundo"},
-            "Porto Alegre": {"email": "alexlopespereira@gmail.com", "orgao": "Defesa Civil da Região Metropolitana"}, #"defesacivil-metropolitana@casamilitar.rs.gov.br"
-            "Canoas": {"email": "alexlopespereira@gmail.com", "orgao": "Defesa Civil da Região Metropolitana"}} #"defesacivil-metropolitana@casamilitar.rs.gov.br"
+            "Porto Alegre": {"email": "defesacivil-metropolitana@casamilitar.rs.gov.br", "orgao": "Defesa Civil da Região Metropolitana"},
+            "Canoas": {"email": "defesacivil-metropolitana@casamilitar.rs.gov.br", "orgao": "Defesa Civil da Região Metropolitana"}}

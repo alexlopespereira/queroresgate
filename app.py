@@ -64,7 +64,7 @@ def solicitar():
     # if verify_response['success'] == False or verify_response['score'] < 0.5:
     #     abort(401)
 
-    latlong = "-29.899238,-51.1719663" #form.latlong.data
+    latlong = form.latlong.data
     email = form.email.data
     nome = form.email.data
     telefone = form.email.data
