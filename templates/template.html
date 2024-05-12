@@ -20,7 +20,7 @@
     </head>
     <body>
         <div class="container">
-            <nav class="navbar navbar-expand-lg  navbar-dark bg-dark"  >
+            <nav class="navbar navbar-expand-lg  navbar-dark bg-dark" >
               <a class="navbar-brand" href="/">Quero Resgate</a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -34,9 +34,28 @@
               </div>
             </nav>
         </div>
+
         <!-- Your page content -->
         {% block content %}{% endblock %}
+<footer class="footer">
 
+    <div class="row" style="background-color:#e2e7eb">
+            <div class="col-xs-4 col-md-4">
+                 <p  class="footer-text">Apoio:</p>
+        <a href="https://www.aeita.com.br"> <!-- Substitua pelo URL desejado -->
+            <img src="./static/image/logo.png" alt="Logo AEITA" style="width: 150px;">
+        </a>
+            </div>
+
+            <div class="col-xs-4 col-md-4">
+                <p class="footer-text">Desenvolvido por:</p>
+                <p class="footer-text-author"><a href="https://www.aeita.com.br"> Alex Pereira </a> e <a href="https://www.aeita.com.br"> Jean Pablo </a>
+                </p>
+            </div>
+
+        </div>
+
+        </footer>
         {% block scripts %}
             <!-- reCaptcha Integration -->
             <script src="https://www.google.com/recaptcha/api.js"></script>
@@ -55,6 +74,7 @@
             </script>
             <script src="https://cdn.jsdelivr.net/npm/bs4-toast@1.2.0/dist/toast.min.js"></script>
         {% endblock %}
+
     </body>
 </html>
 
