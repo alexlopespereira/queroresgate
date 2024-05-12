@@ -4,10 +4,15 @@
 {% endblock %}
 
 {% block content %}
+{# Application Flashes with Toasts 3.25.23 #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+      {% include 'toasts.html' %}
+  {% endif %}
+{% endwith %}
 <div class="container">
 
 {{ super() }}
-{% if tosubmit == True %}
     <br>
     <h3>Siga os passos para informar que precisa de resgate devido às chuvas</h3>
 
@@ -20,16 +25,16 @@
     </br>
   <form id="resgate-form" method="POST" action="/solicitar">
         {{ form.hidden_tag() }}
+      {{ form.csrf_token }}
         <div class="row">
             <div class="col-xs-2 col-md-1">
                 {{ form.nome.label }}
             </div>
             <div class="col-xs-3 col-md-3">
-                {{ form.nome }}
+                {{ form.nome(required="required") }}
             </div>
 
         </div>
-
         <div class="row" style="margin-top: 10px">
             <div class="col-xs-2 col-md-1">
                 {{ form.email.label }}
@@ -65,19 +70,13 @@
             <div class="col-xs-4 col-md-4">
                 {% if torecaptcha == True %}
                 <p>Clique somente se você realmente estiver precisando! Ou pode entrar na frente de alguem que está precisando.</p>
-                    <input type="submit" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit'>
+                    <input type="submit" id="informar" name="informar" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit'>
                 {% else %}
                     {{ form.informar(class="btn btn-lg btn-primary") }}
                 {% endif %}
-
             </div>
         </div>
     </form>
-{% else %}
-<h2>{{ email }},</h2>
-<h4>Sua soclicitação foi encaminhada!</h4>
-    <div id="map"></div>
-{% endif %}
 </div>
 {% endblock %}
 
@@ -86,6 +85,11 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
     <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
     <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.toast').toast('show');
+        });
+    </script>
     <script>
     first_location = 0
     var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -105,6 +109,8 @@
 
     function onLocationError(e) {
         console.log(e)
+        if (e.message != 'Geolocation error: Position acquisition timed out.')
+        {
         $.toast({
             type: 'warning',
             title: 'Habilite a localização',
@@ -112,6 +118,7 @@
             content: 'Se você não habilitar a localização no seu nagegador, o mapa não aparece.',
             delay: 20000
         });
+        }
     }
     map.on('locationerror', onLocationError);
 

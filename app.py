@@ -2,7 +2,7 @@ import json
 import sys
 import os
 import requests as requests
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, flash
 from flask import request
 from requests.structures import CaseInsensitiveDict
 from forms import ResgateForm
@@ -52,48 +52,54 @@ def get_geolocation(ip):
 @app.route('/', methods=['GET'])
 def index():
     form = ResgateForm()
-    return render_template('index.html', form=form, torecaptcha=DEBUG == False, tosubmit=True, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
+    return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
 @app.route('/solicitar', methods=['POST'])
 def solicitar():
     form = ResgateForm(request.form)
-    secret_response = request.form['g-recaptcha-response']
+    if request.method == 'POST' and form.validate_on_submit():
+        secret_response = request.form['g-recaptcha-response']
 
-    verify_response = requests.post(url=f'{VERIFY_URL}?secret={RECAPTCHA_PRIVATE_KEY}&response={secret_response}').json()
+        verify_response = requests.post(url=f'{VERIFY_URL}?secret={RECAPTCHA_PRIVATE_KEY}&response={secret_response}').json()
 
-    # if verify_response['success'] == False or verify_response['score'] < 0.5:
-    #     abort(401)
+        # if verify_response['success'] == False or verify_response['score'] < 0.5:
+        #     abort(401)
 
-    latlong = form.latlong.data
-    email = form.email.data
-    nome = form.email.data
-    telefone = form.email.data
-    endereco = form.email.data
-    location = [float(f) for f in latlong.split(',')]
-    url = f"https://api.geoapify.com/v1/geocode/reverse?lat={location[0]}&lon={location[1]}&apiKey={GEOAPIFY_KEY}"
-    headers = CaseInsensitiveDict()
-    headers["Accept"] = "application/json"
-    try:
-        resp = requests.get(url, headers=headers)
-        data = json.loads(resp.text)
-    except Exception as e:
-        return render_template('message.html', msg="Não foi possível processar a sua solicitação. Tente novamente mais tarde.")
+        latlong = form.latlong.data
+        email = form.email.data
+        nome = form.email.data
+        telefone = form.email.data
+        endereco = form.email.data
+        if email == '' or nome == '' or telefone == '' or endereco == '':
+            flash('Todos os campos são obrigatórios', category='error')
+            return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY, error_message="Preencha todos os campos")
+        location = [float(f) for f in latlong.split(',')]
+        url = f"https://api.geoapify.com/v1/geocode/reverse?lat={location[0]}&lon={location[1]}&apiKey={GEOAPIFY_KEY}"
+        headers = CaseInsensitiveDict()
+        headers["Accept"] = "application/json"
+        try:
+            resp = requests.get(url, headers=headers)
+            data = json.loads(resp.text)
+        except Exception as e:
+            return render_template('message.html', msg="Não foi possível processar a sua solicitação. Tente novamente mais tarde.")
 
-    city = data['features'][0]['properties']['city']
-    state = data['features'][0]['properties']['state']
-    county = data['features'][0]['properties']['county']
-    if state.upper() != "RIO GRANDE DO SUL" and county.upper() != "RIO GRANDE DO SUL" and county.upper() != 'FEDERAL DISTRICT':
-        return render_template('message.html', msg="No momento só cadastramos os dados de contato dos órgãos de defesa civil do Rio Grande do Sul.")
-    else:
-        if city in contatos.keys():
-            orgao = contatos[city]['orgao']
-            dest_email = contatos[city]['email']
+        city = data['features'][0]['properties']['city']
+        state = data['features'][0]['properties']['state']
+        county = data['features'][0]['properties']['county']
+        if state.upper() != "RIO GRANDE DO SUL" and county.upper() != "RIO GRANDE DO SUL" and county.upper() != 'FEDERAL DISTRICT':
+            return render_template('message.html', msg="No momento só cadastramos os dados de contato dos órgãos de defesa civil do Rio Grande do Sul.")
         else:
-            orgao = contatos["Porto Alegre"]['orgao']
-            dest_email = contatos["Porto Alegre"]['email']
-        send_email(orgao, dest_email, nome, email, telefone, endereco, latlong)
-        return render_template('message.html', msg="Enviamos um email para as forças de segurança com os seus dados.")
-
+            if city in contatos.keys():
+                orgao = contatos[city]['orgao']
+                dest_email = contatos[city]['email']
+            else:
+                orgao = contatos["Porto Alegre"]['orgao']
+                dest_email = contatos["Porto Alegre"]['email']
+            send_email(orgao, dest_email, nome, email, telefone, endereco, latlong)
+            return render_template('message.html', msg="Enviamos um email para as forças de segurança com os seus dados.")
+    else:
+        flash('Todos os campos são obrigatórios', category='danger')
+        return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY, error_message="Preencha todos os campos")
 @app.route('/sobre', methods=['GET'])
 def sobre():
     return render_template('sobre.html')
