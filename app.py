@@ -67,9 +67,9 @@ def solicitar():
 
         latlong = form.latlong.data
         email = form.email.data
-        nome = form.email.data
-        telefone = form.email.data
-        endereco = form.email.data
+        nome = form.nome.data
+        telefone = form.telefone.data
+        endereco = form.endereco.data
         if email == '' or nome == '' or telefone == '' or endereco == '':
             flash('Todos os campos são obrigatórios', category='error')
             return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY, error_message="Preencha todos os campos")
