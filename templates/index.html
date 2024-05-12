@@ -9,7 +9,14 @@
 {{ super() }}
 {% if tosubmit == True %}
     <br>
-    <h3>Habilite a localização, preencha seus dados e clique em Solicitar Resgate. Enviaremos um email para as forças de segurança com os seus dados.</h3>
+    <h3>Siga os passos para informar que precisa de resgate devido às chuvas</h3>
+
+    <ul>
+          <li>Habilite a localização</li>
+          <li>Preencha seus dados</li>
+          <li>Certifique-se de que o mapa está mostrando a sua localização</li>
+          <li>Clique em Solicitar Resgate</li>
+    </ul>
     </br>
   <form id="resgate-form" method="POST" action="/solicitar">
         {{ form.hidden_tag() }}
@@ -57,6 +64,7 @@
       <div class="row" style="margin-top: 10px">
             <div class="col-xs-4 col-md-4">
                 {% if torecaptcha == True %}
+                <p>Clique somente se você realmente estiver precisando! Ou pode entrar na frente de alguem que está precisando.</p>
                     <input type="submit" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit'>
                 {% else %}
                     {{ form.informar(class="btn btn-lg btn-primary") }}
