@@ -70,13 +70,17 @@
             <div class="col-xs-4 col-md-4">
                 {% if torecaptcha == True %}
                 <p>Clique somente se você realmente estiver precisando! Ou pode entrar na frente de alguem que está precisando.</p>
-                    <input type="submit" id="informar" name="informar" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit'>
+                    <input type="submit" id="informar" name="informar" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit' style="margin-bottom:50px">
                 {% else %}
                     {{ form.informar(class="btn btn-lg btn-primary") }}
                 {% endif %}
             </div>
         </div>
     </form>
+    </br>
+    </br>
+    </br>
+    </br>
 </div>
 {% endblock %}
 
