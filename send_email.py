@@ -18,7 +18,7 @@ def send_email(org_dest, dest_email, nome, email, telefone, endereco, localizaca
     <html>
       <body>
         <p>Prezado representante do(a) {org_dest},<br>
-           Informamos que a pessoa abaixo qualificada solicitou resgate por meio da nossa plataforma. 
+           Informamos que a pessoa abaixo qualificada solicitou resgate por meio da nossa <a href="https://www.queroresgate.com.br">plataforma</a>. 
         </p>
          <ul>
           <li>Nome: {nome}</li>
