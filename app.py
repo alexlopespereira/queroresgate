@@ -82,7 +82,7 @@ def solicitar():
     city = data['features'][0]['properties']['city']
     state = data['features'][0]['properties']['state']
     county = data['features'][0]['properties']['county']
-    if state.upper() != "RIO GRANDE DO SUL" and county.upper() != "RIO GRANDE DO SUL":
+    if state.upper() != "RIO GRANDE DO SUL" and county.upper() != "RIO GRANDE DO SUL" and county.upper() != 'FEDERAL DISTRICT':
         return render_template('message.html', msg="No momento só cadastramos os dados de contato dos órgãos de defesa civil do Rio Grande do Sul.")
     else:
         if city in contatos.keys():
