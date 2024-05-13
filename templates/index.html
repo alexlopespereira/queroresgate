@@ -25,49 +25,89 @@
     </br>
   <form id="resgate-form" method="POST" action="/solicitar">
         {{ form.hidden_tag() }}
-      {{ form.csrf_token }}
         <div class="row">
-            <div class="col-xs-2 col-md-1">
+            <div class="col-xs-4 col-md-3">
                 {{ form.nome.label }}
             </div>
-            <div class="col-xs-3 col-md-3">
+            <div class="col-xs-4 col-md-5">
                 {{ form.nome(required="required") }}
             </div>
 
         </div>
         <div class="row" style="margin-top: 10px">
-            <div class="col-xs-2 col-md-1">
+            <div class="col-xs-4 col-md-3">
                 {{ form.email.label }}
             </div>
-            <div class="col-xs-3 col-md-3">
+            <div class="col-xs-4 col-md-5">
                 {{ form.email }}
             </div>
         </div>
         <div class="row" style="margin-top: 10px">
-            <div class="col-xs-2 col-md-1">
+            <div class="col-xs-4 col-md-3">
                 {{ form.telefone.label }}
             </div>
-            <div class="col-xs-3 col-md-3">
-                {{ form.telefone }}
+            <div class="col-xs-4 col-md-5">
+                {{ form.telefone(class='phone') }}
             </div>
         </div>
 
         <div class="row" style="margin-top:10px">
-            <div class="col-xs-2 col-md-1">
+            <div class="col-xs-4 col-md-3">
                 {{ form.endereco.label }}
             </div>
-             <div class="col-xs-3 col-md-3">
+             <div class="col-xs-4 col-md-3">
                 {{ form.endereco }}
             </div>
         </div>
+      <div class="row" style="margin-top:10px">
+            <div class="col-xs-4 col-md-3">
+                {{ form.numpessoas.label }}
+            </div>
+             <div class="col-xs-4 col-md-5">
+                {{ form.numpessoas }}
+            </div>
+        </div>
 
+      <div class="row" style="margin-top:10px">
+            <div class="col-xs-4 col-md-3">
+                {{ form.numanimais.label }}
+            </div>
+             <div class="col-xs-4 col-md-5">
+                {{ form.numanimais }}
+            </div>
+        </div>
+
+       <div class="row" style="margin-top:10px">
+            <div class="col-xs-4 col-md-3">
+                {{ form.outrapessoa.label }}
+            </div>
+             <div class="col-xs-4 col-md-5">
+                {{ form.outrapessoa }}
+            </div>
+        </div>
+
+      <div class="row" style="margin-top:10px">
+            <div class="col-xs-4 col-md-3">
+                {{ form.telefoneoutrapessoa.label }}
+            </div>
+             <div class="col-xs-4 col-md-5">
+                {{ form.telefoneoutrapessoa(class='phone', disabled='') }}
+            </div>
+        </div>
+
+      <div class="row" style="margin-top:10px">
+            <div class="col-xs-4 col-md-3">
+                {{ form.nomeoutrapessoa.label }}
+            </div>
+             <div class="col-xs-4 col-md-5">
+                {{ form.nomeoutrapessoa(disabled='') }}
+            </div>
+        </div>
       </br>
       {{ form.latlong.label }}
-        <div id="map" style="margin-top:10px"></div>
-
-
+      <div id="map" style="margin-top:10px"></div>
       <div class="row" style="margin-top: 10px">
-            <div class="col-xs-4 col-md-4">
+            <div class="col-xs-4 col-md-5">
                 {% if torecaptcha == True %}
                 <p>Clique somente se você realmente estiver precisando! Ou pode entrar na frente de alguem que está precisando.</p>
                     <input type="submit" id="informar" name="informar" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit' style="margin-bottom:50px">
@@ -89,9 +129,22 @@
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7"></script>
     <script src="{{url_for('static', filename='control/L.Control.Locate.js')}}"></script>
     <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
     <script>
         $(document).ready(function(){
             $('.toast').toast('show');
+        });
+        document.getElementById('outrapessoa').onchange = function() {
+            document.getElementById('telefoneoutrapessoa').disabled = !this.checked;
+            document.getElementById('nomeoutrapessoa').disabled = !this.checked;
+            document.getElementById('numpessoas').disabled = !this.checked;
+            document.getElementById('numanimais').disabled = !this.checked;
+        };
+
+    </script>
+  <script>
+        $(document).ready(function(){
+            $('.phone').inputmask('(99) 99999-9999');
         });
     </script>
     <script>
