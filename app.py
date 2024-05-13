@@ -1,3 +1,4 @@
+import datetime
 import json
 import sys
 import os
@@ -11,6 +12,7 @@ from flask_bootstrap import Bootstrap
 
 from dotenv import load_dotenv, find_dotenv
 
+from github import create_issue
 from send_email import send_email
 
 load_dotenv(find_dotenv())
@@ -70,6 +72,12 @@ def solicitar():
         nome = form.nome.data
         telefone = form.telefone.data
         endereco = form.endereco.data
+        outrapessoa = form.outrapessoa.data
+        nomeoutrapessoa = form.nomeoutrapessoa.data
+        telefoneoutrapessoa = form.telefoneoutrapessoa.data
+        numpessoas = form.numpessoas.data
+        numanimais = form.numanimais.data
+
         if email == '' or nome == '' or telefone == '' or endereco == '':
             flash('Todos os campos são obrigatórios', category='error')
             return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY, error_message="Preencha todos os campos")
@@ -86,6 +94,7 @@ def solicitar():
         city = data['features'][0]['properties']['city']
         state = data['features'][0]['properties']['state']
         county = data['features'][0]['properties']['county']
+        geocoding_address = data['features'][0]['properties']['formatted']
         if state.upper() != "RIO GRANDE DO SUL" and county.upper() != "RIO GRANDE DO SUL" and county.upper() != 'FEDERAL DISTRICT':
             return render_template('message.html', msg="No momento só cadastramos os dados de contato dos órgãos de defesa civil do Rio Grande do Sul.")
         else:
@@ -95,7 +104,32 @@ def solicitar():
             else:
                 orgao = contatos["Porto Alegre"]['orgao']
                 dest_email = contatos["Porto Alegre"]['email']
-            send_email(orgao, dest_email, nome, email, telefone, endereco, latlong)
+            send_email(orgao, dest_email, nome, email, telefone, endereco, latlong, geocoding_address, numpessoas, numanimais, outrapessoa, telefoneoutrapessoa, nomeoutrapessoa)
+            if outrapessoa:
+                body = f"""- Nome do solicitante: {nome}
+                            - Telefone do solicitante: {telefone}
+                            - Endereço informado: {endereco}
+                            - Endereço geo: {geocoding_address}
+                            - Nome do necessitado: {nomeoutrapessoa}
+                            - Telefone do necessitado: {telefoneoutrapessoa}
+                            - Número de pessoas: {numpessoas}
+                            - Número de animais: {numanimais}
+                            - Data / Hora: {datetime.datetime.now()}
+                            - [Geolocalizacao](http://maps.google.com/?q={latlong})
+                            """
+            else:
+                body = f"""- Nome: {nome}
+                        - Email: {email}
+                        - Telefone: {telefone}
+                        - Endereço informado: {endereco}
+                        - Endereço geo: {geocoding_address}
+                        - Número de pessoas: {numpessoas}
+                        - Número de animais: {numanimais}
+                        - Data / Hora: {datetime.datetime.now()}
+                        - [Geolocalizacao](http://maps.google.com/?q={latlong})
+                        """
+
+            create_issue(f"demanda de: {nome} / {city}", body)
             return render_template('message.html', msg="Enviamos um email para as forças de segurança com os seus dados.")
     else:
         flash('Todos os campos são obrigatórios', category='danger')
