@@ -10,9 +10,7 @@ BCC_ADDRESSES = os.getenv('BCC_ADDRESSES').split(',')
 GMAIL_PASSWORD = os.getenv('GMAIL_PASSWORD')
 GMAIL_USER = 'demanda.resgate@gmail.com'
 
-
-
-def send_email(org_dest, dest_email, data, geo_address, data_hora):
+def send_email(org_dest, dest_email, data, geo_address, lat_long_from_addres, data_hora):
     subject = 'Notificação de solicitação de resgate'
     if data['resgate_pra_voce'] == 'yes':
         html = f"""\
@@ -25,7 +23,7 @@ def send_email(org_dest, dest_email, data, geo_address, data_hora):
                       <li>Nome do solicitante: {data['nome']}</li>
                       <li>Telefone do solicitante: {data['telefone']}</li>
                       <li>Resgate foi pra quem solicitou: Sim</li>
-                      <li>Rua: {data['endereco']}</li>
+                      <li>Rua: {data['rua']}</li>
                       <li>Número: {data['numero']}</li>
                       <li>Complemento: {data['complemento']}</li>
                       <li>Bairro: {data['bairro']}</li>
@@ -40,13 +38,13 @@ def send_email(org_dest, dest_email, data, geo_address, data_hora):
                       <li>Há crianças: {data['criancas']}</li>
                       <li>Há pessoas com deficiência: {data['pessoacomdeficiencia']}</li>
                       <li>Número de animais: {data['numanimais']}</li>
-                      <li><a href="http://maps.google.com/?q={data['latlong']}">Geolocalizacao</a></li>
+                      <li><a href="http://maps.google.com/?q={data['latlong']}">Geolocalizacao do celular</a></li>
+                      <li><a href="http://maps.google.com/?q={lat_long_from_addres}">Geolocalizacao do enedereço</a></li>
                     </ul> 
                   <br>
                   </body>
                 </html>
                 """
-
     else:
         html = f"""\
                 <html>
@@ -58,7 +56,7 @@ def send_email(org_dest, dest_email, data, geo_address, data_hora):
                       <li>Nome do solicitante: {data['nomeoutrapessoa']}</li>
                       <li>Telefone do solicitante: {data['telefoneoutrapessoa']}</li>
                       <li>Resgate foi pra quem solicitou: Não</li>
-                      <li>Rua: {data['endereco']}</li>
+                      <li>Rua: {data['rua']}</li>
                       <li>Número: {data['numero']}</li>
                       <li>Complemento: {data['complemento']}</li>
                       <li>Bairro: {data['bairro']}</li>
@@ -73,7 +71,8 @@ def send_email(org_dest, dest_email, data, geo_address, data_hora):
                       <li>Há crianças: {data['criancas']}</li>
                       <li>Há pessoas com deficiência: {data['pessoacomdeficiencia']}</li>
                       <li>Número de animais: {data['numanimais']}</li>
-                      <li><a href="http://maps.google.com/?q={data['latlong']}">Geolocalizacao</a></li>
+                      <li><a href="http://maps.google.com/?q={data['latlong']}">Geolocalizacao do celular</a></li>
+                      <li><a href="http://maps.google.com/?q={lat_long_from_addres}">Geolocalizacao do enedereço</a></li>
                     </ul> 
                   <br>
                   </body>

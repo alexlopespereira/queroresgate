@@ -78,7 +78,7 @@
                     <label>Outro Telefone: </label>
                 </div>
                 <div class="col-xs-3 col-md-3">
-                    {{ form.telefone_complementar() }}
+                    {{ form.telefone_complementar(class='phone') }}
                 </div>
             </div>
             <div  class="row">
@@ -115,7 +115,7 @@
                     <label>Rua (logradouro): </label>
                     </div>
                     <div class="col-xs-3 col-md-3">
-                        {{ form.endereco }}
+                        {{ form.rua }}
                     </div>
             </div>
             <div  class="row">
@@ -150,7 +150,16 @@
                     <label>Cidade: </label>
                     </div>
                     <div class="col-xs-3 col-md-3">
-                        {{ form.complemento }}
+                        {{ form.cidade }}
+                    </div>
+            </div>
+
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Estado: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.estado }}
                     </div>
             </div>
 
