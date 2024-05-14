@@ -7,13 +7,17 @@ from flask import Flask, render_template, abort, flash
 from flask import request
 from requests.structures import CaseInsensitiveDict
 from forms import ResgateForm
-from defs import DEBUG, VERIFY_URL, contatos
+from defs import DEBUG, VERIFY_URL, contatos, cities, city_tuples
 from flask_bootstrap import Bootstrap
 
 from dotenv import load_dotenv, find_dotenv
 
 from github import create_issue
+from google_api import get_geocode_from_zipcode
 from send_email import send_email
+import pytz
+
+timezone = pytz.timezone('Etc/GMT+3')
 
 load_dotenv(find_dotenv())
 
@@ -54,6 +58,7 @@ def get_geolocation(ip):
 @app.route('/', methods=['GET'])
 def index():
     form = ResgateForm()
+    # form.cidade.choices = city_tuples
     return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
 @app.route('/solicitar', methods=['POST'])
@@ -64,23 +69,31 @@ def solicitar():
 
         verify_response = requests.post(url=f'{VERIFY_URL}?secret={RECAPTCHA_PRIVATE_KEY}&response={secret_response}').json()
 
-        # if verify_response['success'] == False or verify_response['score'] < 0.5:
-        #     abort(401)
+        if verify_response['success'] == False or verify_response['score'] < 0.5:
+            abort(401)
 
         latlong = form.latlong.data
-        email = form.email.data
-        nome = form.nome.data
         telefone = form.telefone.data
-        endereco = form.endereco.data
-        outrapessoa = form.outrapessoa.data
-        nomeoutrapessoa = form.nomeoutrapessoa.data
+        nome = form.nome.data
         telefoneoutrapessoa = form.telefoneoutrapessoa.data
+        nomeoutrapessoa = form.nomeoutrapessoa.data
+
+        cep = form.cep.data
+        rua = form.endereco.data
+        numero = form.numero.data
+        complemento = form.complemento.data
+        bairro = form.bairro.data
+        cidade = form.cidade.data
+        pontoreferencia = form.pontoreferencia.data
+        estado = form.estado.data
+
         numpessoas = form.numpessoas.data
         numanimais = form.numanimais.data
 
-        if email == '' or nome == '' or telefone == '' or endereco == '':
-            flash('Todos os campos são obrigatórios', category='error')
-            return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY, error_message="Preencha todos os campos")
+        idosos = form.idosos.data
+        criancas = form.criancas.data
+        pessoacomdeficiencia = form.pessoacomdeficiencia.data
+
         location = [float(f) for f in latlong.split(',')]
         url = f"https://api.geoapify.com/v1/geocode/reverse?lat={location[0]}&lon={location[1]}&apiKey={GEOAPIFY_KEY}"
         headers = CaseInsensitiveDict()
@@ -104,40 +117,67 @@ def solicitar():
             else:
                 orgao = contatos["Porto Alegre"]['orgao']
                 dest_email = contatos["Porto Alegre"]['email']
-            send_email(orgao, dest_email, nome, email, telefone, endereco, latlong, geocoding_address, numpessoas, numanimais, outrapessoa, telefoneoutrapessoa, nomeoutrapessoa)
-            if outrapessoa:
+            utc_now = datetime.datetime.now(pytz.utc)
+            utc_minus_3 = utc_now.astimezone(timezone)
+            send_email(orgao, dest_email, form.data, geocoding_address, utc_minus_3)
+            if form.resgate_pra_voce.data == 'yes':
                 body = f"""- Nome do solicitante: {nome}
                             - Telefone do solicitante: {telefone}
-                            - Endereço informado: {endereco}
-                            - Endereço geo: {geocoding_address}
-                            - Nome do necessitado: {nomeoutrapessoa}
-                            - Telefone do necessitado: {telefoneoutrapessoa}
+                            - Resgate foi pra quem solicitou: Sim
+                            - Rua: {rua}
+                            - Número: {numero}
+                            - Complemento: {complemento}
+                            - Bairro: {bairro}
+                            - Ponto de Referência: {pontoreferencia}
+                            - Cidade: {cidade}
+                            - CEP: {cep}                               
+                            - Estado: {estado}
+                            - Endereço geo: {geocoding_address}                            
                             - Número de pessoas: {numpessoas}
+                            - Há idosos: {"Sim" if idosos else "Não"}
+                            - Há crianças: {"Sim" if criancas else "Não"}
+                            - Há pessoas com deficiência: {"Sim" if pessoacomdeficiencia else "Não"}
                             - Número de animais: {numanimais}
-                            - Data / Hora: {datetime.datetime.now()}
+                            - Data / Hora: {utc_minus_3}
                             - [Geolocalizacao](http://maps.google.com/?q={latlong})
                             """
             else:
-                body = f"""- Nome: {nome}
-                        - Email: {email}
-                        - Telefone: {telefone}
-                        - Endereço informado: {endereco}
-                        - Endereço geo: {geocoding_address}
-                        - Número de pessoas: {numpessoas}
-                        - Número de animais: {numanimais}
-                        - Data / Hora: {datetime.datetime.now()}
-                        - [Geolocalizacao](http://maps.google.com/?q={latlong})
-                        """
+                body =  f"""- Nome do solicitante: {nomeoutrapessoa}
+                            - Telefone do solicitante: {telefoneoutrapessoa}
+                            - Resgate foi pra quem solicitou: Não
+                            - Rua: {rua}
+                            - Número: {numero}
+                            - Complemento: {complemento}
+                            - Bairro: {bairro}
+                            - Ponto de Referência: {pontoreferencia}
+                            - Cidade: {cidade}
+                            - CEP: {cep}                               
+                            - Estado: {estado}
+                            - Endereço geo: {geocoding_address}                            
+                            - Número de pessoas: {numpessoas}
+                            - Há idosos: {"Sim" if idosos else "Não"}
+                            - Há crianças: {"Sim" if criancas else "Não"}
+                            - Há pessoas com deficiência: {"Sim" if pessoacomdeficiencia else "Não"}
+                            - Número de animais: {numanimais}
+                            - Data / Hora: {utc_minus_3}
+                            - [Geolocalizacao](http://maps.google.com/?q={latlong})
+                            """
 
             create_issue(f"demanda de: {nome} / {city}", body)
             return render_template('message.html', msg="Enviamos um email para as forças de segurança com os seus dados.")
     else:
         flash('Todos os campos são obrigatórios', category='danger')
+        form.cidade.choices = city_tuples
         return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY, error_message="Preencha todos os campos")
 @app.route('/sobre', methods=['GET'])
 def sobre():
     return render_template('sobre.html')
 
+@app.route('/address', methods=['POST'])
+def address():
+    print(request)
+    data_addr = get_geocode_from_zipcode(json.loads(request.data)['zipCode'])
+    return data_addr
 
 
 if __name__ == '__main__':
