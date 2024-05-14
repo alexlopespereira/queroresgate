@@ -25,85 +25,163 @@
     </br>
   <form id="resgate-form" method="POST" action="/solicitar">
         {{ form.hidden_tag() }}
-        <div class="row">
-            <div class="col-xs-4 col-md-3">
-                {{ form.nome.label }}
-            </div>
-            <div class="col-xs-4 col-md-5">
-                {{ form.nome(required="required") }}
+      <fieldset>
+            <legend>Contato</legend>
+          <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                        <label>O resgate é para você?</label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.resgate_pra_voce }}
+                    </div>
+                </div>
+            <div id="personalInfo" style="display:none;">
+                <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                        <label>Seu número de telefone: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.telefone(class='phone') }}
+                    </div>
+                </div>
+                <div  class="row">
+                <div class="col-xs-6 col-md-3">
+                    <label>Seu nome: </label>
+                </div>
+                <div class="col-xs-3 col-md-3">
+                    {{ form.nome }}
+                </div>
+                </div>
             </div>
 
-        </div>
-        <div class="row" style="margin-top: 10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.email.label }}
+          <div id="otherInfo" style="display:none;" class="row">
+              <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                        <label>Número de telefone de quem precisa de resgate: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.telefoneoutrapessoa(class='phone') }}
+                    </div>
+              </div>
+                <div  class="row">
+                <div class="col-xs-6 col-md-3">
+                    <label>Nome de quem precisa de resgate: </label>
+                </div>
+                <div class="col-xs-3 col-md-3">
+                    {{ form.nomeoutrapessoa() }}
+                </div>
+                </div>
             </div>
-            <div class="col-xs-4 col-md-5">
-                {{ form.email }}
-            </div>
-        </div>
-        <div class="row" style="margin-top: 10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.telefone.label }}
-            </div>
-            <div class="col-xs-4 col-md-5">
-                {{ form.telefone(class='phone') }}
-            </div>
-        </div>
 
-        <div class="row" style="margin-top:10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.endereco.label }}
+        </fieldset>
+</br>
+        <fieldset>
+            <legend>Endereço para Resgate</legend>
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                        <label>CEP: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.cep(class='cep') }}
+                    </div>
             </div>
-             <div class="col-xs-4 col-md-3">
-                {{ form.endereco }}
-            </div>
-        </div>
-      <div class="row" style="margin-top:10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.numpessoas.label }}
-            </div>
-             <div class="col-xs-4 col-md-5">
-                {{ form.numpessoas }}
-            </div>
-        </div>
 
-      <div class="row" style="margin-top:10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.numanimais.label }}
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Rua (logradouro): </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.endereco }}
+                    </div>
             </div>
-             <div class="col-xs-4 col-md-5">
-                {{ form.numanimais }}
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Número: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.numero }}
+                    </div>
             </div>
-        </div>
 
-       <div class="row" style="margin-top:10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.outrapessoa.label }}
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Complemento: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.complemento }}
+                    </div>
             </div>
-             <div class="col-xs-4 col-md-5">
-                {{ form.outrapessoa }}
-            </div>
-        </div>
 
-      <div class="row" style="margin-top:10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.telefoneoutrapessoa.label }}
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Bairro: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.bairro }}
+                    </div>
             </div>
-             <div class="col-xs-4 col-md-5">
-                {{ form.telefoneoutrapessoa(class='phone', disabled='') }}
-            </div>
-        </div>
 
-      <div class="row" style="margin-top:10px">
-            <div class="col-xs-4 col-md-3">
-                {{ form.nomeoutrapessoa.label }}
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Cidade: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.complemento }}
+                    </div>
             </div>
-             <div class="col-xs-4 col-md-5">
-                {{ form.nomeoutrapessoa(disabled='') }}
+
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Ponto de Referência: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.pontoreferencia }}
+                    </div>
             </div>
-        </div>
-      </br>
+
+        </fieldset>
+</br>
+        <fieldset>
+            <legend>Dados do Resgate</legend>
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                     <label>Número total de pessoas: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.numpessoas }}
+                    </div>
+            </div>
+
+            <div>
+                <label>Entre as pessoas, alguém desses grupos?</label>
+                {{ form.idosos }} Idosos
+                {{ form.criancas }} Crianças
+                {{ form.pessoacomdeficiencia }} Pessoas com deficiência
+            </div>
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                     <label>Número total de animais: </label>
+                    </div>
+                    <div class="col-xs-3 col-md-3">
+                        {{ form.numanimais }}
+                    </div>
+            </div>
+
+            <div  class="row">
+                    <div class="col-xs-6 col-md-3">
+                    <label>Informações relevantes ou complementares para o resgate:</label>
+                    </div>
+                    <div class="col-xs-8 col-md-6">
+                        {{ form.observacoes }}
+                    </div>
+            </div>
+            </br>
+            <div  class="row">
+                    <label>{{ form.consentimento }}Ao enviar essa solicitação, você concorda com o compartilhamento dos dados informados com as equipes voluntárias e órgãos públicos atuantes nos resgates.</label>
+            </div>
+        </fieldset>
+
+
       {{ form.latlong.label }}
       <div id="map" style="margin-top:10px"></div>
       <div class="row" style="margin-top: 10px">
@@ -131,21 +209,83 @@
     <script src="{{url_for('static', filename='leaflet/leaflet-providers.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
     <script>
+        document.getElementById('personalInfo').style.display = 'block'
+        function toggleContactInfo(isPersonal) {
+    document.getElementById('personalInfo').style.display = isPersonal ? 'block' : 'none';
+    document.getElementById('otherInfo').style.display = isPersonal ? 'none' : 'block';
+}
         $(document).ready(function(){
             $('.toast').toast('show');
         });
-        document.getElementById('outrapessoa').onchange = function() {
-            document.getElementById('telefoneoutrapessoa').disabled = !this.checked;
-            document.getElementById('nomeoutrapessoa').disabled = !this.checked;
-            document.getElementById('numpessoas').disabled = !this.checked;
-            document.getElementById('numanimais').disabled = !this.checked;
-        };
 
+
+        function setSelectedIndex(s, v) {
+           for ( var i = 0; i < s.options.length; i++ ) {
+                if ( s.options[i].value == v ) {
+                    s.options[i].selected = true;
+                    return;
+                }
+           }
+        }
+        function fetchAddressInfo() {
+            var zipCode = document.getElementById('cep').value;
+            if (zipCode) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/address', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response) {
+                            document.getElementById('endereco').value = response.address || '';
+                            var objSelect = document.getElementById('cidade');
+                            setSelectedIndex(objSelect, response.city)
+                        } else {
+                            alert('No address found');
+                        }
+                    }
+                };
+                xhr.send(JSON.stringify({zipCode: zipCode}));
+            }
+        }
+
+        // Use the blur event to trigger address information fetch
+        document.getElementById('cep').addEventListener('blur', fetchAddressInfo);
     </script>
   <script>
         $(document).ready(function(){
             $('.phone').inputmask('(99) 99999-9999');
+            $('.cep').inputmask('99999-999');
         });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get references to the radio buttons
+    var radioYes = document.getElementById('resgate_pra_voce-0');
+    var radioNo = document.getElementById('resgate_pra_voce-1');
+
+    // Get references to the div elements
+    var personalInfoDiv = document.getElementById('personalInfo');
+    var otherInfoDiv = document.getElementById('otherInfo');
+
+    // Function to toggle visibility based on radio input
+    function toggleVisibility() {
+        if (radioYes.checked) {
+            personalInfoDiv.style.display = 'block';
+            otherInfoDiv.style.display = 'none';
+        } else if (radioNo.checked) {
+            personalInfoDiv.style.display = 'none';
+            otherInfoDiv.style.display = 'block';
+        }
+    }
+
+    // Add event listeners to the radio buttons
+    radioYes.addEventListener('change', toggleVisibility);
+    radioNo.addEventListener('change', toggleVisibility);
+
+    // Initialize visibility based on the currently checked radio button
+    toggleVisibility();
+});
     </script>
     <script>
     first_location = 0
