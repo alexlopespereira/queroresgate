@@ -13,7 +13,7 @@ from flask_bootstrap import Bootstrap
 from dotenv import load_dotenv, find_dotenv
 
 from github import create_issue
-from google_api import get_geocode_from_zipcode
+from google_api import get_geocode_from_zipcode, add_line_to_sheet
 from send_email import send_email
 import pytz
 
@@ -25,6 +25,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 GEOAPIFY_KEY = os.getenv('GEOAPIFY_KEY')
+SHEET_KEY = os.getenv('SHEET_KEY')
 APP_PORT = 8080
 
 
@@ -59,7 +60,7 @@ def get_geolocation(ip):
 def index():
     form = ResgateForm()
     # form.cidade.choices = city_tuples
-    return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
+    return render_template('index.html', form=form, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY)
 
 @app.route('/solicitar', methods=['POST'])
 def solicitar():
@@ -102,7 +103,7 @@ def solicitar():
             resp = requests.get(url, headers=headers)
             data = json.loads(resp.text)
         except Exception as e:
-            return render_template('message.html', msg="Não foi possível processar a sua solicitação. Tente novamente mais tarde.")
+            return render_template('message.html', msg=f"Não foi possível processar a sua solicitação. Tente novamente mais tarde. Erro:{form.errors}")
 
         city = data['features'][0]['properties']['city']
         state = data['features'][0]['properties']['state']
@@ -111,15 +112,22 @@ def solicitar():
         if state.upper() != "RIO GRANDE DO SUL" and county.upper() != "RIO GRANDE DO SUL" and county.upper() != 'FEDERAL DISTRICT':
             return render_template('message.html', msg="No momento só cadastramos os dados de contato dos órgãos de defesa civil do Rio Grande do Sul.")
         else:
-            if city in contatos.keys():
-                orgao = contatos[city]['orgao']
-                dest_email = contatos[city]['email']
+            if not DEBUG:
+                if city in contatos.keys():
+                    orgao = contatos[city]['orgao']
+                    dest_email = contatos[city]['email']
+                else:
+                    orgao = contatos["Porto Alegre"]['orgao']
+                    dest_email = contatos["Porto Alegre"]['email']
             else:
-                orgao = contatos["Porto Alegre"]['orgao']
-                dest_email = contatos["Porto Alegre"]['email']
+                orgao = "Defesa Civil da CIDADE X"
+                dest_email = "alexlopespereira@gmail.com"
+
             utc_now = datetime.datetime.now(pytz.utc)
             utc_minus_3 = utc_now.astimezone(timezone)
             send_email(orgao, dest_email, form.data, geocoding_address, utc_minus_3)
+            sheets_data = [nome, telefone, nomeoutrapessoa, telefoneoutrapessoa, rua, numero, complemento, bairro, pontoreferencia, estado, numpessoas, numanimais, idosos, criancas, pessoacomdeficiencia, f"http://maps.google.com/?q={latlong}"]
+            add_line_to_sheet(sheets_data, SHEET_KEY)
             if form.resgate_pra_voce.data == 'yes':
                 body = f"""- Nome do solicitante: {nome}
                             - Telefone do solicitante: {telefone}
@@ -166,7 +174,7 @@ def solicitar():
             create_issue(f"demanda de: {nome} / {city}", body)
             return render_template('message.html', msg="Enviamos um email para as forças de segurança com os seus dados.")
     else:
-        flash('Todos os campos são obrigatórios', category='danger')
+        flash('Os seguintes campos são obrigatórios', category='danger')
         form.cidade.choices = city_tuples
         return render_template('index.html', form=form, torecaptcha=DEBUG == False, popup_message="Estou aqui", site_key=RECAPTCHA_PUBLIC_KEY, error_message="Preencha todos os campos")
 @app.route('/sobre', methods=['GET'])
