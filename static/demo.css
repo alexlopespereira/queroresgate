@@ -60,7 +60,12 @@ font-size: 12px;
 
 input[type="radio"] {
     margin-right: 25px;  /* Space after the radio button */
-    margin-left: 0px;  /* Space before the radio button, between consecutive buttons */
+    margin-left: 10px;  /* Space before the radio button, between consecutive buttons */
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;  /* Space after the radio button */
+    margin-left: 10px;  /* Space before the radio button, between consecutive buttons */
 }
 
 /* Increase the space around labels for readability */

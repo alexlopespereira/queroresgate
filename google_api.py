@@ -1,10 +1,16 @@
+import base64
+
 import requests
 import os
+import json
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 from dotenv import load_dotenv, find_dotenv
+
 load_dotenv(find_dotenv())
 
 GOOGLE_GEOCODING_API_KEY = os.getenv('GOOGLE_GEOCODING_API_KEY')
-
+GOOGLE_SHEETS_KEY = os.getenv('GOOGLE_SHEETS_KEY')
 
 
 
@@ -36,14 +42,26 @@ def get_geocode_from_zipcode(zipcode):
         print("Failed to connect to the API:", response.status_code)
         return None, None, None
 
-# Replace 'YOUR_API_KEY' with your actual Google Cloud API key
-# api_key = GOOGLE_GEOCODING_API_KEY
-# zipcode = '70200004'  # Example ZIP code
-# full_address, address, city, uf, latitude, longitude = get_geocode_from_zipcode(api_key, zipcode)
-#
-# if address:
-#     print("Address:", address)
-#     print("Latitude:", latitude)
-#     print("Longitude:", longitude)
-# else:
-#     print("No data found for the provided ZIP code.")
+
+
+def add_line_to_sheet(data, sheet_key):
+    # Define the scope
+    scope = ['https://www.googleapis.com/auth/spreadsheets']
+
+    # Authenticate using the service account
+    # credentials = ServiceAccountCredentials.from_json_keyfile_name(creds_file, scope)
+    creds_json = base64.b64decode(GOOGLE_SHEETS_KEY).decode('utf-8')
+    creds_dict = json.loads(creds_json)
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+    client = gspread.authorize(credentials)
+
+    # Open the sheet
+    sheet = client.open_by_key(sheet_key).sheet1  # Assuming you're using the first sheet
+
+    # Append a new line
+    sheet.append_row(data)
+
+# Example usage:
+# data = ["Name", "Email", "Phone"]  # Data to add
+#   # Name of your Google Sheet
+# add_line_to_sheet(data, sheet_key)
