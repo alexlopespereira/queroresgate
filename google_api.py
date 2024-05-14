@@ -1,5 +1,4 @@
 import base64
-
 import requests
 import os
 import json
@@ -14,8 +13,8 @@ GOOGLE_SHEETS_KEY = os.getenv('GOOGLE_SHEETS_KEY')
 
 
 
-def get_geocode_from_zipcode(zipcode):
-    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={zipcode}&key={GOOGLE_GEOCODING_API_KEY}"
+def get_geocode_from_zipcode(input_addr):
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={input_addr}&key={GOOGLE_GEOCODING_API_KEY}"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
@@ -37,10 +36,10 @@ def get_geocode_from_zipcode(zipcode):
             address = sublocality_level_1 + " " + sublocality_level_2 + " " + sublocality_level_3 + " " + sublocality_level_4
             return {"full_address": full_address, "address": address, "city": city, "uf": uf, "latitude": latitude, "longitude": longitude}
         else:
-            return None, None, None
+            return {"full_address": "", "address": "", "city": "", "uf": "", "latitude": "", "longitude": ""}
     else:
         print("Failed to connect to the API:", response.status_code)
-        return None, None, None
+        return {"full_address": "", "address": "", "city": "", "uf": "", "latitude": "", "longitude": ""}
 
 
 
@@ -59,7 +58,7 @@ def add_line_to_sheet(data, sheet_key):
     sheet = client.open_by_key(sheet_key).sheet1  # Assuming you're using the first sheet
 
     # Append a new line
-    sheet.append_row(data)
+    sheet.append_row(data, table_range='A1')
 
 # Example usage:
 # data = ["Name", "Email", "Phone"]  # Data to add
