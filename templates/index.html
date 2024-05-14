@@ -14,7 +14,7 @@
 
 {{ super() }}
     <br>
-    <h3>Siga os passos para informar a sua defesa civil que precisa de resgate devido às chuvas</h3>
+    <h3>Siga os passos para informar que precisa de resgate devido às enchentes</h3>
 
     <ul>
           <li>Habilite a localização</li>
@@ -63,7 +63,7 @@
                         {{ form.telefoneoutrapessoa(class='phone') }}
                     </div>
               </div>
-                <div  class="row">
+            <div  class="row">
                 <div class="col-xs-6 col-md-3">
                     <label>Nome de quem precisa de resgate: </label>
                 </div>
@@ -72,7 +72,31 @@
                 </div>
                 </div>
             </div>
-
+            <label>Tem outro número de telefone de contato para informações complementares? </label>
+            <div  class="row">
+                <div class="col-xs-6 col-md-3">
+                    <label>Outro Telefone: </label>
+                </div>
+                <div class="col-xs-3 col-md-3">
+                    {{ form.telefone_complementar() }}
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col-xs-6 col-md-3">
+                    <label>Nome: </label>
+                </div>
+                <div class="col-xs-3 col-md-3">
+                    {{ form.nome_complementar() }}
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col-xs-6 col-md-3">
+                    <label>Parentesco: </label>
+                </div>
+                <div class="col-xs-3 col-md-3">
+                    {{ form.parentesco() }}
+                </div>
+            </div>
         </fieldset>
 </br>
         <fieldset>
@@ -152,8 +176,12 @@
                     </div>
             </div>
 
-            <div>
-                <label>Entre as pessoas, alguém desses grupos?</label>
+            <div  class="row">
+                    <div class="col-xs-6 col-md-6">
+                     <label>Entre as pessoas, alguém desses grupos?</label>
+                    </div>
+                </div>
+            <div  class="row">
                 {{ form.idosos }} Idosos
                 {{ form.criancas }} Crianças
                 {{ form.pessoacomdeficiencia }} Pessoas com deficiência
@@ -177,7 +205,7 @@
             </div>
             </br>
             <div  class="row">
-                    <label>{{ form.consentimento }}Ao enviar essa solicitação, você concorda com o compartilhamento dos dados informados com as equipes voluntárias e órgãos públicos atuantes nos resgates.</label>
+                    <label>{{ form.consentimento }} Ao enviar essa solicitação, você concorda com o compartilhamento dos dados informados com as equipes voluntárias atuantes nos resgates.</label>
             </div>
         </fieldset>
 
@@ -186,12 +214,8 @@
       <div id="map" style="margin-top:10px"></div>
       <div class="row" style="margin-top: 10px">
             <div class="col-xs-4 col-md-5">
-                {% if torecaptcha == True %}
                 <p>Clique somente se você realmente estiver precisando! Ou pode entrar na frente de alguem que está precisando.</p>
-                    <input type="submit" id="informar" name="informar" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit' style="margin-bottom:50px">
-                {% else %}
-                    {{ form.informar(class="btn btn-lg btn-primary") }}
-                {% endif %}
+                <input type="submit" id="informar" name="informar" value="Solicitar Resgate" class="btn btn-lg btn-primary g-recaptcha" data-sitekey="{{site_key}}" data-callback='onSubmit'  data-action='submit' style="margin-bottom:50px">
             </div>
         </div>
     </form>
